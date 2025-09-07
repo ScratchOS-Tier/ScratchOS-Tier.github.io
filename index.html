@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCOS Tier 排行榜 V11</title>
+    <title>SCOS Tier 排行榜 V13</title>
     <link rel="icon" href="scostierlogo.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>history.scrollRestoration='manual';</script>
     <style>
+        /* ===== 重置与基础样式 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body, html {
             font-family:'Inter', system-ui, sans-serif;
@@ -17,7 +18,10 @@
             min-height:100vh;
             line-height:1.6;
             overflow-x:hidden;
+            scroll-behavior: smooth;
         }
+        
+        /* ===== 布局容器 ===== */
         .container {
             width:100%;
             max-width:1200px;
@@ -25,6 +29,48 @@
             padding:2rem 1rem;
             position:relative;
             z-index:1;
+        }
+        
+        /* ===== 标题样式 ===== */
+        .header-title {
+            font-size:clamp(2rem,5vw,3.5rem);
+            font-weight:bold;
+            margin-bottom:0.5rem;
+            text-shadow:0px 0px 20px #ff8648;
+            color:#fff;
+        }
+        .header-subtitle {
+            font-size:clamp(1.5rem,3vw,2.5rem);
+            font-weight:600;
+            color:#ffffff;
+            text-shadow:0px 0px 10px #ff8648;
+        }
+        
+        /* ===== 等级标签样式 ===== */
+        .tier-label {
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+            padding:0.25rem 0.75rem;
+            background:#1e1e1e;
+            border-radius:9999px;
+            transition:transform 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+        }
+        .tier-label:hover { 
+            transform:translateY(-2px); 
+            background:#2d2d2d; 
+        }
+        .tier-dot { 
+            width:1rem; 
+            height:1rem; 
+            border-radius:50%; 
+        }
+        
+        /* ===== 等级组样式 ===== */
+        .tier-group { 
+            margin-bottom:2rem; 
+            transition: all 0.4s ease; 
         }
         .tier-group-title {
             margin:2rem 0 1rem;
@@ -34,7 +80,6 @@
             font-weight:bold;
             display:inline-block;
         }
-        .tier-group { margin-bottom:2rem; }
         .tier-group-title.S { background:rgba(255,58,58,0.2); color:#ff3a3a; border-left:4px solid #ff3a3a; }
         .tier-group-title.A { background:rgba(255,149,0,0.2); color:#ff9500; border-left:4px solid #ff9500; }
         .tier-group-title.B { background:rgba(255,204,0,0.2); color:#ffcc00; border-left:4px solid #ffcc00; }
@@ -42,40 +87,19 @@
         .tier-group-title.D { background:rgba(0,122,255,0.2); color:#007aff; border-left:4px solid #007aff; }
         .tier-group-title.unknown { background:rgba(255,255,255,0.1); color:#fff; border-left:4px solid #fff; }
         
-        .header-title {
-            font-size:clamp(2rem,5vw,3.5rem);
-            font-weight:bold;
-            margin-bottom:0.5rem;
-            text-shadow:0px 0px 20px #ff8648;
-        }
-        .header-subtitle {
-            font-size:clamp(1.5rem,3vw,2.5rem);
-            font-weight:600;
-            color:#ffffff;
-            text-shadow:0px 0px 10px #ff8648;
-        }
-        
-        .tier-label {
-            display:flex;
-            align-items:center;
-            gap:0.5rem;
-            padding:0.25rem 0.75rem;
-            background:#1e1e1e;
-            border-radius:9999px;
-            transition:transform 0.2s ease;
-        }
-        .tier-label:hover { transform:translateY(-2px); background:#2d2d2d; }
-        .tier-dot { width:1rem; height:1rem; border-radius:50%; }
-        
+        /* ===== 卡片网格布局 ===== */
         .card-grid {
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1.5rem;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            min-height: 0;
         }
         @media (min-width:640px) { .card-grid { grid-template-columns:repeat(2,1fr); } }
         @media (min-width:1024px) { .card-grid { grid-template-columns:repeat(3,1fr); } }
         @media (min-width:1280px) { .card-grid { grid-template-columns:repeat(4,1fr); } }
         
+        /* ===== 卡片样式 ===== */
         .tier-card {
             background:#1e1e1e;
             border-radius:0.75rem;
@@ -85,19 +109,24 @@
             min-height:250px;
             display:flex;
             flex-direction:column;
-            transition:all 0.2s ease-out;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, transform 0.5s ease;
         }
         .tier-card:hover {
             transform:scale(1.03);
             box-shadow:0 10px 15px -3px rgba(0,0,0,0.3),0 4px 6px -2px rgba(0,0,0,0.15);
             background:#2d2d2d;
         }
+        .tier-card:hover .image-container {
+            background:#2d2d2d;
+        }
+        
         .card-content {
             padding:1.25rem;
             padding-top:2rem;
             display:flex;
             flex-direction:column;
             flex-grow:1;
+            transition:all 0.3s ease;
         }
         .card-title {
             font-size:1.25rem;
@@ -121,7 +150,10 @@
         .card-footer-text {
             font-size:0.875rem;
             transition:all 0.3s ease;
+            color:#6b7280;
         }
+        
+        /* ===== 卡片详情 ===== */
         .card-details {
             margin-top:1rem;
             overflow:hidden;
@@ -132,7 +164,10 @@
             border-top:1px solid #374151;
             padding-top:1rem;
         }
-        .details-title { font-weight:bold; margin-bottom:0.5rem; }
+        .details-title { 
+            font-weight:bold; 
+            margin-bottom:0.5rem; 
+        }
         .details-list {
             list-style:disc;
             padding-left:1.25rem;
@@ -145,6 +180,7 @@
         }
         .details-text { color:#d1d5db; }
         
+        /* ===== 徽章样式 ===== */
         .tier-badge {
             position:absolute;
             top:0;
@@ -164,7 +200,7 @@
             color:black;
         }
         
-        /* 新增设备角标样式 */
+        /* ===== 设备徽章 ===== */
         .device-badge {
             position:absolute;
             top:2.5rem;
@@ -178,9 +214,56 @@
             align-items:center;
             gap:0.25rem;
         }
-        .device-badge.mobile { background:#22c55e; } /* 绿色背景 */
-        .device-badge.pc { background:#3b82f6; } /* 蓝色背景 */
+        .device-badge.mobile { background:#22c55e; }
+        .device-badge.pc { background:#3b82f6; }
         
+        /* ===== 图片容器和加载动画 ===== */
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            background: #1e1e1e;
+            transition: height 0.5s ease, background 0.3s ease;
+        }
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(1.1);
+            transition: opacity 0.5s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-image.loaded {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .image-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            transition: opacity 0.5s ease;
+        }
+        .image-placeholder.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        /* ===== 动画效果 ===== */
         .animate-on-scroll {
             opacity:0;
             transform:translateY(20px) scale(0.98);
@@ -190,10 +273,14 @@
             opacity:1;
             transform:translateY(0) scale(1);
         }
-        .rotate-180 { transform:rotate(180deg); transition:transform 0.3s ease; }
+        .rotate-180 { 
+            transform:rotate(180deg); 
+            transition:transform 0.3s ease; 
+        }
         .card-expanded .card-footer { transform:translateY(-5px); }
         .card-expanded .card-footer-text { opacity:0; transform:translateY(10px); }
         
+        /* ===== 背景装饰 ===== */
         .background-decoration {
             position:fixed;
             top:0;
@@ -206,7 +293,7 @@
             background:#121212;
         }
         
-        /* 作者链接样式 */
+        /* ===== 链接样式 ===== */
         .author-link {
             color: #3b82f6;
             text-decoration: none;
@@ -217,62 +304,137 @@
             text-decoration: underline;
         }
         
-        /* 新增图片加载相关样式 */
-        .image-container {
+        /* ===== 搜索框样式 ===== */
+        .search-container {
+            margin: 15px 0;
+            padding: 0 1rem;
+        }
+        .search-pill {
+            display: flex;
+            align-items: center;
+            background: #1e1e1e;
+            border-radius: 24px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            max-width: 100%;
+            border: 1px solid #374151;
+        }
+        .search-pill:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .search-icon {
+            margin-right: 12px;
+            color: #9ca3af;
+            width: 18px;
+            height: 18px;
             position: relative;
-            width: 100%;
-            height: 12rem;
-            overflow: hidden;
-            background: #2d2d2d;
         }
-        
-        .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transform: scale(1.1);
-            transition: opacity 0.5s ease, transform 0.8s ease;
-        }
-        
-        .card-image.loaded {
-            opacity: 1;
-            transform: scale(1);
-        }
-        
-        .image-placeholder {
+        .search-icon::before {
+            content: "";
             position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+        }
+        .search-icon::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: currentColor;
+            transform: rotate(-45deg);
+            bottom: -1px;
+            right: 2px;
+        }
+        #scos-search {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            min-width: 50px;
+            color: #f5f5f5;
+        }
+        #scos-search::placeholder {
+            color: #6b7280;
+        }
+        .clear-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 0;
+            margin-left: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #2d2d2d;
-            transition: opacity 0.5s ease;
-        }
-        
-        .image-placeholder.hidden {
             opacity: 0;
-            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease, background 0.2s ease;
+        }
+        .clear-btn:hover {
+            background: #374151;
+        }
+        .clear-btn.visible {
+            opacity: 1;
+            visibility: visible;
         }
         
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        /* ===== 搜索相关动画状态 ===== */
+        .tier-group.search-hidden,
+        .tier-card.search-hidden {
+            display: none !important;
+        }
+        .tier-card.exiting, 
+        .tier-group.exiting {
+            opacity: 0 !important;
+            transform: scale(0.8) !important;
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tier-card.exiting.done,
+        .tier-card.done { 
+            display: none !important; 
+        }
+        .tier-card.search-hidden,
+        .tier-card.exiting { 
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .tier-card.entering, 
+        .tier-group.entering {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        .tier-card.entering.search-visible, 
+        .tier-group.entering.search-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tier-card.invisible,
+        .tier-group.invisible {
+            opacity: 0;
         }
         
+        /* ===== 关键帧动画 ===== */
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        .content-shift {
-            transition: transform 0.5s ease, opacity 0.5s ease;
+        @keyframes cardLoading {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
     </style>
 </head>
@@ -280,24 +442,36 @@
     <div class="background-decoration"></div>
     <div class="container">
         <header class="animate-on-scroll" data-animate style="text-align:center; margin:2rem 1rem;">
-            <h1 class="header-title" style="color:#fff">SCOS Tier 排行榜</h1>
+            <h1 class="header-title">SCOS Tier 排行榜</h1>
             <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">内容版本：202509062144-0</p>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V11 - 优化一些内容</p>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">Windows 可以通过 Ctrl + F 并输入文字来在网页里查找自己的作品。</p>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">Mac 可以通过 Cmd + F 并输入文字来在网页里查找自己的作品。</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V14 - 优化了搜索框和标签</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过下方的搜索框来搜索作品。</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过点击标签来跳转到对应等级。</p>
         </header>
-        
-        <div class="animate-on-scroll" data-animate style="display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-bottom:1.25rem;">
-            <div class="tier-label"><span class="tier-dot" style="background:#ff3a3a"></span><span>S级: 顶尖</span></div>
-            <div class="tier-label"><span class="tier-dot" style="background:#ff9500"></span><span>A级: 优秀</span></div>
-            <div class="tier-label"><span class="tier-dot" style="background:#ffcc00"></span><span>B级: 普通</span></div>
-            <div class="tier-label"><span class="tier-dot" style="background:#34c759"></span><span>C级: 勉强</span></div>
-            <div class="tier-label"><span class="tier-dot" style="background:#007aff"></span><span>D级: 废物</span></div>
-            <div class="tier-label"><span class="tier-dot" style="background:#fff"></span><span>X级: 未评价</span></div>
+
+        <!-- 搜索框 -->
+        <div class="search-container animate-on-scroll" data-animate>
+            <div class="search-pill">
+                <div class="search-icon"></div>
+                <input type="text" id="scos-search" placeholder="搜索作品名称..." />
+                <button class="clear-btn">×</button>
+            </div>
         </div>
         
+        <!-- 等级标签 -->
+        <div class="animate-on-scroll" data-animate style="display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-bottom:1.25rem;">
+            <div class="tier-label" data-tier="S"><span class="tier-dot" style="background:#ff3a3a"></span><span>S级: 顶尖</span></div>
+            <div class="tier-label" data-tier="A"><span class="tier-dot" style="background:#ff9500"></span><span>A级: 优秀</span></div>
+            <div class="tier-label" data-tier="B"><span class="tier-dot" style="background:#ffcc00"></span><span>B级: 普通</span></div>
+            <div class="tier-label" data-tier="C"><span class="tier-dot" style="background:#34c759"></span><span>C级: 勉强</span></div>
+            <div class="tier-label" data-tier="D"><span class="tier-dot" style="background:#007aff"></span><span>D级: 废物</span></div>
+            <div class="tier-label" data-tier="unknown"><span class="tier-dot" style="background:#fff"></span><span>X级: 未评价</span></div>
+        </div>
+        
+        <!-- 内容区域 -->
         <div id="sortedContent"></div>
         
+        <!-- 页脚 -->
         <footer class="animate-on-scroll" data-animate style="margin-top:4rem; text-align:center; color:#6b7280; font-size:0.875rem;">
             <p>© 2025 移动端 SCOS Tier 排行 - 作者为 半生风血 (Wind_Blood)</p>
             <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
@@ -308,15 +482,19 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded',()=>{
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo(0,0);
-            const tierOrder=['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-'];
-            const cardTemplates=document.querySelectorAll('div[tier-template] .tier-card');
             
-            const cards=Array.from(cardTemplates).map(template=>{
-                const card=template.cloneNode(true);
-                let tier=card.getAttribute('data-tier');
-                const kind=card.getAttribute('data-kind');
+            // 等级排序
+            const tierOrder = ['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-'];
+            const cardTemplates = document.querySelectorAll('div[tier-template] .tier-card');
+            
+            // 处理卡片模板
+            const cards = Array.from(cardTemplates).map(template => {
+                const card = template.cloneNode(true);
+                let tier = card.getAttribute('data-tier');
+                const kind = card.getAttribute('data-kind');
                 
                 // 检查tier是否有效，无效则设置为X
                 if(!tier || !tierOrder.includes(tier)) {
@@ -324,15 +502,17 @@
                     card.setAttribute('data-tier', 'X');
                 }
                 
-                const tierBadge=document.createElement('div');
-                tierBadge.className='tier-badge';
-                tierBadge.setAttribute('data-tier',tier);
-                tierBadge.textContent=tier;
+                // 创建等级徽章
+                const tierBadge = document.createElement('div');
+                tierBadge.className = 'tier-badge';
+                tierBadge.setAttribute('data-tier', tier);
+                tierBadge.textContent = tier;
                 
-                let relativeContainer=card.querySelector('[style*="position:relative"]');
+                // 确保卡片有相对定位容器
+                let relativeContainer = card.querySelector('[style*="position:relative"]');
                 if(!relativeContainer){
-                    relativeContainer=document.createElement('div');
-                    relativeContainer.style.position='relative';
+                    relativeContainer = document.createElement('div');
+                    relativeContainer.style.position = 'relative';
                     while(card.firstChild) relativeContainer.appendChild(card.firstChild);
                     card.appendChild(relativeContainer);
                 }
@@ -358,7 +538,8 @@
                 return card;
             });
             
-            cards.sort((a,b)=>{
+            // 卡片排序
+            cards.sort((a, b) => {
                 const aTier = a.getAttribute('data-tier');
                 const bTier = b.getAttribute('data-tier');
                 
@@ -367,17 +548,18 @@
                 if(aTier === 'X') return 1;
                 if(bTier === 'X') return -1;
                 
-                const aIdx=tierOrder.indexOf(aTier);
-                const bIdx=tierOrder.indexOf(bTier);
-                if(aIdx===-1 && bIdx===-1) return 0;
-                if(aIdx===-1) return 1;
-                if(bIdx===-1) return -1;
-                return aIdx-bIdx;
+                const aIdx = tierOrder.indexOf(aTier);
+                const bIdx = tierOrder.indexOf(bTier);
+                if(aIdx === -1 && bIdx === -1) return 0;
+                if(aIdx === -1) return 1;
+                if(bIdx === -1) return -1;
+                return aIdx - bIdx;
             });
             
-            const tierGroups={S:[],A:[],B:[],C:[],D:[],unknown:[]};
-            cards.forEach(card=>{
-                const tier=card.getAttribute('data-tier');
+            // 按等级分组
+            const tierGroups = {S:[], A:[], B:[], C:[], D:[], unknown:[]};
+            cards.forEach(card => {
+                const tier = card.getAttribute('data-tier');
                 if(tier === 'X') {
                     tierGroups.unknown.push(card);
                 } else if(tier.startsWith('S')) tierGroups.S.push(card);
@@ -388,28 +570,62 @@
                 else tierGroups.unknown.push(card);
             });
             
-            const container=document.getElementById('sortedContent');
-            ['S','A','B','C','D','unknown'].forEach(group=>{
+            // 渲染分组内容
+            const container = document.getElementById('sortedContent');
+            ['S','A','B','C','D','unknown'].forEach(group => {
                 if(tierGroups[group].length){
-                    const groupEl=document.createElement('div');
-                    groupEl.className='tier-group animate-on-scroll';
+                    const groupEl = document.createElement('div');
+                    groupEl.className = 'tier-group animate-on-scroll';
                     groupEl.setAttribute('data-animate','true');
+                    groupEl.id = `tier-${group}`; // 添加ID用于跳转
                     
-                    const title=document.createElement('h3');
-                    title.className=`tier-group-title ${group}`;
-                    title.textContent=group==='unknown'?`未评价 (${tierGroups[group].length}个)`:`${group}级别 (${tierGroups[group].length}个)`;
+                    const title = document.createElement('h3');
+                    title.className = `tier-group-title ${group}`;
+                    title.textContent = group === 'unknown' ? `未评价 (${tierGroups[group].length}个)` : `${group}级别 (${tierGroups[group].length}个)`;
                     
-                    const grid=document.createElement('div');
-                    grid.className='card-grid';
-                    tierGroups[group].forEach(card=>grid.appendChild(card));
+                    const grid = document.createElement('div');
+                    grid.className = 'card-grid';
+                    tierGroups[group].forEach(card => grid.appendChild(card));
                     
-                    groupEl.append(title,grid);
+                    groupEl.append(title, grid);
                     container.appendChild(groupEl);
                 }
             });
             
+            // 添加等级标签点击事件
+            document.querySelectorAll('.tier-label').forEach(label => {
+                label.addEventListener('click', () => {
+                    const tier = label.getAttribute('data-tier');
+                    const targetElement = document.getElementById(`tier-${tier}`);
+                    
+                    if (targetElement) {
+                        // 计算偏移量，考虑固定导航栏等
+                        const offsetTop = targetElement.offsetTop - 80;
+                        
+                        // 平滑滚动到目标位置
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 添加高亮效果
+                        targetElement.style.transition = 'box-shadow 0.5s ease, border-radius 0.5s ease';
+                        targetElement.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.3)';
+                        targetElement.style.borderRadius = '12px';
+                        
+                        // 移除高亮效果
+                        setTimeout(() => {
+                            targetElement.style.boxShadow = '';
+                        }, 1500);
+                    }
+                });
+            });
+            
             // 处理图片加载和动画
             document.querySelectorAll('.tier-card').forEach(card => {
+                // 添加加载状态类
+                card.classList.add('loading');
+                
                 const img = card.querySelector('img');
                 if (img) {
                     // 创建图片容器和占位符
@@ -426,76 +642,79 @@
                     imageContainer.appendChild(placeholder);
                     
                     // 将图片移动到容器中
-                    img.parentNode.insertBefore(imageContainer, img);
+                    const imgParent = img.parentNode;
+                    imgParent.insertBefore(imageContainer, img);
                     imageContainer.appendChild(img);
+                    
+                    // 移除图片原有的类，添加新的类
                     img.className = 'card-image';
                     
                     // 图片加载完成后
                     if (img.complete) {
-                        img.classList.add('loaded');
-                        placeholder.classList.add('hidden');
+                        handleImageLoad(img, imageContainer, placeholder, card);
                     } else {
                         img.addEventListener('load', () => {
-                            img.classList.add('loaded');
-                            setTimeout(() => {
-                                placeholder.classList.add('hidden');
-                            }, 300);
+                            handleImageLoad(img, imageContainer, placeholder, card);
                         });
                         
                         img.addEventListener('error', () => {
-                            placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
-                            setTimeout(() => {
-                                placeholder.classList.add('hidden');
-                            }, 300);
+                            handleImageError(placeholder, imageContainer, card);
                         });
                     }
+                } else {
+                    // 如果没有图片，直接移除加载状态
+                    setTimeout(() => {
+                        card.classList.remove('loading');
+                    }, 500);
                 }
                 
-                const details=card.querySelector('.card-details');
+                const details = card.querySelector('.card-details');
                 if(!details) return;
                 
-                details.style.maxHeight='none';
-                details.style.overflow='visible';
-                const h=details.scrollHeight+20;
-                details.style.maxHeight='0px';
-                details.style.overflow='hidden';
+                details.style.maxHeight = 'none';
+                details.style.overflow = 'visible';
+                const h = details.scrollHeight + 20;
+                details.style.maxHeight = '0px';
+                details.style.overflow = 'hidden';
                 
-                card.addEventListener('click',e=>{
+                card.addEventListener('click', e => {
                     e.stopPropagation();
-                    const isOpen=details.style.maxHeight&&details.style.maxHeight!=='0px';
-                    const icon=card.querySelector('.fa-chevron-down');
-                    const footerText=card.querySelector('.card-footer-text');
+                    const isOpen = details.style.maxHeight && details.style.maxHeight !== '0px';
+                    const icon = card.querySelector('.fa-chevron-down');
+                    const footerText = card.querySelector('.card-footer-text');
                     
                     if(isOpen){
-                        details.style.maxHeight='0px';
+                        details.style.maxHeight = '0px';
                         icon.classList.remove('rotate-180');
                         card.classList.remove('card-expanded');
-                        setTimeout(()=>{
-                            footerText.style.opacity='1';
-                            footerText.style.transform='translateY(0)';
-                        },150);
-                    }else{
-                        details.style.maxHeight=h+'px';
+                        setTimeout(() => {
+                            footerText.style.opacity = '1';
+                            footerText.style.transform = 'translateY(0)';
+                        }, 150);
+                    } else {
+                        details.style.maxHeight = h + 'px';
                         icon.classList.add('rotate-180');
                         card.classList.add('card-expanded');
-                        footerText.style.opacity='0';
-                        footerText.style.transform='translateY(10px)';
+                        footerText.style.opacity = '0';
+                        footerText.style.transform = 'translateY(10px)';
                     }
                 });
             });
             
-            const observer=new IntersectionObserver(entries=>{
-                entries.forEach(entry=>{
+            // 滚动动画观察器
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
                     if(entry.isIntersecting){
                         entry.target.classList.add('animate-visible');
                         observer.unobserve(entry.target);
                     }
                 });
-            },{threshold:0.15,rootMargin:'0px 0px -10px 0px'});
+            }, {threshold:0.15, rootMargin:'0px 0px -10px 0px'});
             
-            document.querySelectorAll('[data-animate]').forEach(el=>observer.observe(el));
-            document.body.style.overscrollBehavior='none';
+            document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+            document.body.style.overscrollBehavior = 'none';
 
+            // 根据等级设置详情标题颜色
             document.querySelectorAll('.tier-card').forEach(card => {
                 const tier = card.getAttribute('data-tier');
                 const detailsTitles = card.querySelectorAll('.details-title');
@@ -514,9 +733,179 @@
                     title.style.color = color;
                 });
             });
+
+            // 图片加载处理函数
+            function handleImageLoad(img, imageContainer, placeholder, card) {
+                // 直接设置loaded类，让透明度和缩放同时进行
+                img.classList.add('loaded');
+                
+                // 获取图片自然高度并设置容器高度
+                const naturalHeight = img.naturalHeight;
+                const naturalWidth = img.naturalWidth;
+                const aspectRatio = naturalHeight / naturalWidth;
+                
+                // 根据图片比例设置容器高度
+                const containerWidth = imageContainer.offsetWidth;
+                const targetHeight = containerWidth * aspectRatio;
+                
+                // 平滑过渡到正确高度
+                imageContainer.style.transition = 'height 0.5s ease';
+                imageContainer.style.height = targetHeight + 'px';
+                
+                // 同时隐藏占位符和移除加载状态
+                setTimeout(() => {
+                    placeholder.classList.add('hidden');
+                    card.classList.remove('loading');
+                }, 500);
+            }
+
+            function handleImageError(placeholder, imageContainer, card) {
+                placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
+                setTimeout(() => {
+                    placeholder.classList.add('hidden');
+                    // 即使加载失败也保持固定高度
+                    card.classList.remove('loading');
+                }, 300);
+            }
+
+            // 初始化搜索功能
+            const searchInput = document.getElementById('scos-search');
+            const clearBtn = document.querySelector('.clear-btn');
+            const allCards = document.querySelectorAll('.tier-card');
+
+            // 确保所有卡片初始状态正确
+            allCards.forEach(card => {
+                card.style.display = 'flex';
+                card.classList.add('search-visible');
+            });
+
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                const searchValue = this.value.toLowerCase().trim();
+                
+                // 显示/隐藏清除按钮
+                if (searchValue.length > 0) {
+                    clearBtn.classList.add('visible');
+                } else {
+                    clearBtn.classList.remove('visible');
+                }
+                
+                // 取消之前的搜索
+                clearTimeout(searchTimeout);
+                
+                // 如果搜索词为空，立即显示所有内容
+                if (searchValue.length === 0) {
+                    filterCards('');
+                    return;
+                }
+                
+                // 设置新的搜索超时
+                searchTimeout = setTimeout(() => {
+                    filterCards(searchValue);
+                }, 200); // 减少延迟到200ms
+            });
+
+            // 清除按钮功能
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearBtn.classList.remove('visible');
+                filterCards('');
+            });
+
+            function getTransitionTime(selector, prop = 'transition-duration') {
+                const el = document.querySelector(selector);
+                if (!el) return 400; // fallback
+                const dur = getComputedStyle(el).getPropertyValue(prop);
+                if (!dur) return 400;
+                return parseFloat(dur) * 1000; // 转 ms
+            }
+
+            function filterCards(searchTerm) {
+                const isSearching = searchTerm.length > 0;
+                const exitTime = getTransitionTime('.tier-card.exiting') || 400;
+                const enterTime = getTransitionTime('.tier-card.entering') || 500;
+
+                const groups = document.querySelectorAll('.tier-group');
+
+                // --- 阶段一：所有卡片 & 分组 → 退出动画 ---
+                allCards.forEach(c => c.classList.add('exiting'));
+                groups.forEach(g => g.classList.add('exiting'));
+
+                // --- 阶段二：等待退出动画结束，再更新DOM ---
+                setTimeout(() => {
+                    allCards.forEach(card => {
+                        const title = card.querySelector('.card-title').textContent.toLowerCase();
+                        const match = title.includes(searchTerm);
+
+                        card.classList.remove('exiting', 'entering');
+
+                        if (!isSearching || match) {
+                            // 匹配的 → 先 invisible，等入场
+                            card.classList.remove('search-hidden');
+                            card.classList.add('search-visible', 'invisible');
+                        } else {
+                            // 不匹配的 → 完全隐藏
+                            card.classList.remove('search-visible');
+                            card.classList.add('search-hidden');
+                            // 添加done类确保彻底隐藏
+                            setTimeout(() => {
+                                card.classList.add('done');
+                            }, 50);
+                        }
+                    });
+
+                    groups.forEach(group => {
+                        const cards = group.querySelectorAll('.tier-card');
+                        const visibleCards = Array.from(cards).filter(c => c.classList.contains('search-visible'));
+                        const visibleCount = visibleCards.length;
+
+                        const tier = group.id.replace('tier-', '');
+                        const titleElement = group.querySelector('.tier-group-title');
+
+                        group.classList.remove('exiting', 'entering');
+
+                        if (visibleCount > 0) {
+                            group.classList.remove('search-hidden');
+                            group.classList.add('search-visible', 'invisible');
+                            titleElement.textContent = tier === 'unknown'
+                            ? `未评价 (${visibleCount}个)`
+                            : `${tier}级别 (${visibleCount}个)`;
+                        } else {
+                            group.classList.add('search-hidden');
+                            group.classList.remove('search-visible');
+                            // 添加done类确保彻底隐藏
+                            setTimeout(() => {
+                                group.classList.add('done');
+                            }, 50);
+                        }
+                    });
+
+                    // --- 阶段三：触发入场动画 ---
+                    requestAnimationFrame(() => {
+                        allCards.forEach(card => {
+                            if (card.classList.contains('invisible')) {
+                                card.classList.remove('invisible', 'done');
+                                card.classList.add('entering');
+                            }
+                        });
+                        groups.forEach(group => {
+                            if (group.classList.contains('invisible')) {
+                                group.classList.remove('invisible', 'done');
+                                group.classList.add('entering');
+                            }
+                        });
+
+                        // 清理entering状态
+                        setTimeout(() => {
+                            document.querySelectorAll('.entering').forEach(el => el.classList.remove('entering'));
+                        }, enterTime);
+                    });
+                }, exitTime);
+            }
         });
     </script>
     
+    <!-- 卡片模板 -->
     <div style="display:none;" tier-template>
         <div class="tier-card animate-on-scroll" data-tier="S" data-kind="mobile" data-animate>
             <img src="https://picsum.photos/id/1/400/200" alt="SCOS Prime界面展示" class="w-full h-48 object-cover">
@@ -617,7 +1006,7 @@
         </div>
         
         <div class="tier-card animate-on-scroll" data-tier="S-" data-kind="pc" data-animate>
-            <img src="https://picsum.photos/id/20/400/200" alt="Hypixice OS界面展示" class="w-full h-48 object-cover">
+            <img src="scostierlogo.png" alt="Hypixice OS界面展示">
             <div class="card-content">
                 <h3 class="card-title">Hypixice OS</h3>
                 <p class="card-description">除了 Bug 几乎没有缺点的电脑端 SCOS</p>
@@ -649,7 +1038,7 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A" data-kind="mobile" data-animate>
-            <img src="https://picsum.photos/id/30/400/200" alt="Nimble UI界面展示" class="w-full h-48 object-cover">
+            <img src="https://picsum.photos/id/30/400/200" alt="Nimble UI界面展示">
             <div class="card-content">
                 <h3 class="card-title">Nimble UI</h3>
                 <p class="card-description">动画也不错，功能、稳定待打磨</p>
@@ -679,7 +1068,7 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A" data-kind="mobile" data-animate>
-            <img src="https://picsum.photos/id/40/400/200" alt="Ocean UI界面展示" class="w-full h-48 object-cover">
+            <img src="Ocean UI.png" alt="Ocean UI Logo">
             <div class="card-content">
                 <h3 class="card-title">Ocean UI Beta 2</h3>
                 <p class="card-description">理应是神作，但实践存在，它的理论崩塌了...</p>
@@ -713,7 +1102,7 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A-" data-kind="mobile" data-animate>
-            <img src="https://picsum.photos/id/50/400/200" alt="HorBrk UI界面展示" class="w-full h-48 object-cover">
+            <img src="https://picsum.photos/id/50/400/200" alt="HorBrk UI Logo">
             <div class="card-content">
                 <h3 class="card-title">HorBrk UI</h3>
                 <p class="card-description">和前面那位不分上下，难舍难分...我说的是稳定性方面</p>
@@ -868,7 +1257,7 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A" data-kind="mobile" data-animate>
-            <!-- <img src="https://picsum.photos/id/60/400/200" alt="未知系统界面展示" class="w-full h-48 object-cover"> -->
+            <img src="Fix UI 1.png" alt="未知系统界面展示">
             <div class="card-content">
                 <h3 class="card-title">Fix UI 1</h3>
                 <p class="card-description">有神奇 Bug，已停止维护</p>
