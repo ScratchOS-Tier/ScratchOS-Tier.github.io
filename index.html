@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCOS Tier 排行榜 V14</title>
-    <link rel="icon" href="scostierlogo.png" type="image/png">
+    <title>SCOS Tier 排行榜 V15</title>
+    <link rel="icon" href="favicon.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>history.scrollRestoration='manual';</script>
     <style>
@@ -388,7 +388,7 @@
             visibility: visible;
         }
         
-        /* ===== 搜索相关动画状态 ===== */
+        /* ===== 修复搜索动画 - 确保同时应用透明度和缩放 ===== */
         .tier-group.search-hidden,
         .tier-card.search-hidden {
             display: none !important;
@@ -396,9 +396,9 @@
         .tier-card.exiting, 
         .tier-group.exiting {
             opacity: 0 !important;
-            transform: scale(0.8) !important;
-            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.8) translateY(20px) !important;
+            transition: opacity 0.3s ease-out(0.4, 0, 0.2, 1),
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         .tier-card.exiting.done,
         .tier-card.done { 
@@ -413,18 +413,19 @@
         .tier-card.entering, 
         .tier-group.entering {
             opacity: 0;
-            transform: translateY(20px) scale(0.95);
+            transform: translateY(20px) scale(0.8);
         }
         .tier-card.entering.search-visible, 
         .tier-group.entering.search-visible {
             opacity: 1;
             transform: translateY(0) scale(1);
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         .tier-card.invisible,
         .tier-group.invisible {
             opacity: 0;
+            transform: scale(0.8);
         }
         
         /* ===== 关键帧动画 ===== */
@@ -443,8 +444,8 @@
     <div class="container">
         <header class="animate-on-scroll" data-animate style="text-align:center; margin:2rem 1rem;">
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">内容版本：202510041449-0</p>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V14 - 优化了搜索框和标签</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">内容版本：202510052235-0</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V15 - 优化了动画</p>
             <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过下方的搜索框来搜索作品。</p>
             <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过点击标签来跳转到对应等级。</p>
         </header>
@@ -814,22 +815,31 @@
 
             function getTransitionTime(selector, prop = 'transition-duration') {
                 const el = document.querySelector(selector);
-                if (!el) return 400; // fallback
+                if (!el) return 300; // fallback
                 const dur = getComputedStyle(el).getPropertyValue(prop);
-                if (!dur) return 400;
+                if (!dur) return 300;
                 return parseFloat(dur) * 1000; // 转 ms
             }
 
             function filterCards(searchTerm) {
                 const isSearching = searchTerm.length > 0;
-                const exitTime = getTransitionTime('.tier-card.exiting') || 400;
-                const enterTime = getTransitionTime('.tier-card.entering') || 500;
+                const exitTime = getTransitionTime('.tier-card.exiting') || 300;
+                const enterTime = getTransitionTime('.tier-card.entering') || 400;
 
                 const groups = document.querySelectorAll('.tier-group');
 
                 // --- 阶段一：所有卡片 & 分组 → 退出动画 ---
-                allCards.forEach(c => c.classList.add('exiting'));
-                groups.forEach(g => g.classList.add('exiting'));
+                allCards.forEach(c => {
+                    c.classList.add('exiting');
+                    // 确保退出动画同时应用透明度和缩放
+                    c.style.transform = 'scale(0.8) translateY(20px)';
+                    c.style.opacity = '0';
+                });
+                groups.forEach(g => {
+                    g.classList.add('exiting');
+                    g.style.transform = 'scale(0.8) translateY(20px)';
+                    g.style.opacity = '0';
+                });
 
                 // --- 阶段二：等待退出动画结束，再更新DOM ---
                 setTimeout(() => {
@@ -838,6 +848,8 @@
                         const match = title.includes(searchTerm);
 
                         card.classList.remove('exiting', 'entering');
+                        card.style.transform = '';
+                        card.style.opacity = '';
 
                         if (!isSearching || match) {
                             // 匹配的 → 先 invisible，等入场
@@ -863,6 +875,8 @@
                         const titleElement = group.querySelector('.tier-group-title');
 
                         group.classList.remove('exiting', 'entering');
+                        group.style.transform = '';
+                        group.style.opacity = '';
 
                         if (visibleCount > 0) {
                             group.classList.remove('search-hidden');
@@ -886,18 +900,42 @@
                             if (card.classList.contains('invisible')) {
                                 card.classList.remove('invisible', 'done');
                                 card.classList.add('entering');
+                                // 确保入场动画同时应用透明度和缩放
+                                card.style.transform = 'scale(0.8) translateY(20px)';
+                                card.style.opacity = '0';
+                                
+                                // 强制重排，确保动画生效
+                                void card.offsetWidth;
+                                
+                                card.classList.add('search-visible');
+                                card.style.transform = 'scale(1) translateY(0)';
+                                card.style.opacity = '1';
                             }
                         });
                         groups.forEach(group => {
                             if (group.classList.contains('invisible')) {
                                 group.classList.remove('invisible', 'done');
                                 group.classList.add('entering');
+                                // 确保入场动画同时应用透明度和缩放
+                                group.style.transform = 'scale(0.8) translateY(20px)';
+                                group.style.opacity = '0';
+                                
+                                // 强制重排，确保动画生效
+                                void group.offsetWidth;
+                                
+                                group.classList.add('search-visible');
+                                group.style.transform = 'scale(1) translateY(0)';
+                                group.style.opacity = '1';
                             }
                         });
 
                         // 清理entering状态
                         setTimeout(() => {
-                            document.querySelectorAll('.entering').forEach(el => el.classList.remove('entering'));
+                            document.querySelectorAll('.entering').forEach(el => {
+                                el.classList.remove('entering');
+                                el.style.transform = '';
+                                el.style.opacity = '';
+                            });
                         }, enterTime);
                     });
                 }, exitTime);
@@ -1201,7 +1239,7 @@
                 <div class="card-details">
                     <div class="card-details-content">
                         <h4 class="details-title">该作品的作者</h4>
-                        <p class="details-text"><a href="https://example.com" class="author-link" target="_blank">3.exe</a></p>
+                        <p class="details-text"><a href="https://space.bilibili.com/1770992344" class="author-link" target="_blank">3.exe</a></p>
                         <h4 class="details-title">优点</h4>
                         <ul class="details-list">
                             <li>(没用) 的 APP 比较多</li>
@@ -1275,7 +1313,7 @@
                         <ul class="details-list">
                             <li>Bug：把作品挂着不管，回去看会发现所有控件大小都变得很大并且会闪现，点击一下后恢复正常</li>
                             <li>作者已停止对它的维护</li>
-                            <li>作者嘴臭、自大，很喜欢将自己的作品和别人的比较，之前发表过 “SCOS 顶尖作品的作者都是男同” 等严重冒犯他人的言论，非常恶心和招人厌</li>
+                            <li>作者嘴臭、自大，很喜欢将自己的作品和别人的比较，之前发表过 "SCOS 顶尖作品的作者都是男同" 等严重冒犯他人的言论，非常恶心和招人厌</li>
                             <li>它的续作 Fix UI 2 也停更了，作者说给他 1000 元就立马更新</li>
                             <li>代码太多了，而且新手根本看不懂</li>
                         </ul>
@@ -1316,7 +1354,7 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A+" data-kind="pc" data-animate>
-            <!-- <img src="https://picsum.photos/id/60/400/200" alt="未知系统界面展示" class="w-full h-48 object-cover"> -->
+            <img src="OUCIS OS.png" alt="OUCIS OS Logo 展示" class="w-full h-48 object-cover">
             <div class="card-content">
                 <h3 class="card-title">OUCIS OS</h3>
                 <p class="card-description">很好的电脑端 OS</p>
@@ -1348,9 +1386,9 @@
         </div>
 
         <div class="tier-card animate-on-scroll" data-tier="A" data-kind="mobile" data-animate>
-            <img src="Sky UI NEXT 4.png" alt="Sky UI NEXT 4 Logo 展示" class="w-full h-48 object-cover">
+            <img src="Sky UI NEXT 4.png" alt="SKY UI NEXT 4 Logo 展示" class="w-full h-48 object-cover">
             <div class="card-content">
-                <h3 class="card-title">Sky UI NEXT 4</h3>
+                <h3 class="card-title">SKY UI NEXT 4</h3>
                 <p class="card-description">疑似第二个三层图标</p>
                 <div class="card-footer">
                     <span class="card-footer-text" style="color:#6b7280;">点击查看详情</span>
@@ -1374,6 +1412,74 @@
                         </ul>
                         <h4 class="details-title">总结</h4>
                         <p class="details-text">性能问题建议改进，加上手势动画和 APP 内容。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tier-card animate-on-scroll" data-tier="B-" data-kind="mobile" data-animate>
+            <!-- <img src="ROS.png" alt="ROS Logo 展示" class="w-full h-48 object-cover"> -->
+            <div class="card-content">
+                <h3 class="card-title">ROS</h3>
+                <p class="card-description">有诚意，但不多</p>
+                <div class="card-footer">
+                    <span class="card-footer-text" style="color:#6b7280;">点击查看详情</span>
+                    <i class="fa fa-chevron-down" style="color:#6b7280; transition:transform 0.3s ease;"></i>
+                </div>
+                <div class="card-details">
+                    <div class="card-details-content">
+                        <h4 class="details-title">该作品的作者</h4>
+                        <p class="details-text"><a href="https://space.bilibili.com/1770992344" class="author-link" target="_blank">3.exe</a></p>
+                        <h4 class="details-title">优点</h4>
+                        <ul class="details-list">
+                            <li>说实话没啥特别突出的</li>
+                            <li>作者听劝</li>
+                            <li>用了一个图标和界面之间虚像衔接的方案，支持一下创新</li>
+                            <li>有二级菜单，这已经很难得了</li>
+                        </ul>
+                        <h4 class="details-title">缺点</h4>
+                        <ul class="details-list">
+                            <li>动画还是不算太好</li>
+                            <li>打开和关闭 APP 没有回退手势</li>
+                            <li>拖动 APP 控件直接开消失动画，难绷</li>
+                            <li>图标图层等细节问题仍未改善</li>
+                        </ul>
+                        <h4 class="details-title">总结</h4>
+                        <p class="details-text">创新的想法是很好的，但是这个作品真的还只能算是移动端 SCOS 里比较一般的。建议优化上述内容。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tier-card animate-on-scroll" data-tier="B+" data-kind="mobile" data-animate>
+            <!-- <img src="ROS.png" alt="ROS Logo 展示" class="w-full h-48 object-cover"> -->
+            <div class="card-content">
+                <h3 class="card-title">Aura UI</h3>
+                <p class="card-description">堪比 Ocean... 从各个方面</p>
+                <div class="card-footer">
+                    <span class="card-footer-text" style="color:#6b7280;">点击查看详情</span>
+                    <i class="fa fa-chevron-down" style="color:#6b7280; transition:transform 0.3s ease;"></i>
+                </div>
+                <div class="card-details">
+                    <div class="card-details-content">
+                        <h4 class="details-title">该作品的作者</h4>
+                        <p class="details-text"><a href="https://space.bilibili.com/2025677704" class="author-link" target="_blank">一只琪露诺-9</a></p>
+                        <h4 class="details-title">优点</h4>
+                        <ul class="details-list">
+                            <li>三层图标，动画和 Ocean 差不多</li>
+                            <li>有能用且有用的设置 APP</li>
+                            <li>开机动画好看</li>
+                            <li>开关 APP 调得很舒服</li>
+                            <li>可滑动翻页</li>
+                        </ul>
+                        <h4 class="details-title">缺点</h4>
+                        <ul class="details-list">
+                            <li>稳定性不太好，虽然没 Ocean Bug 多</li>
+                            <li>开关 APP 没有回退手势</li>
+                            <li>设置里的 “MIUI 12.5” 等字样我不知道是干嘛的，上面也没标</li>
+                        </ul>
+                        <h4 class="details-title">总结</h4>
+                        <p class="details-text">也是一个还算不错的 SCOS，但是确实有很多莫名其妙且难以再现的 Bug。重写改变人生。</p>
                     </div>
                 </div>
             </div>
