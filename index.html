@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCOS Tier 排行榜 V15</title>
+    <title>SCOS Tier 排行榜 V16</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>history.scrollRestoration='manual';</script>
@@ -18,6 +18,7 @@
             min-height:100vh;
             line-height:1.6;
             overflow-x:hidden;
+            overflow-y:auto;
             scroll-behavior: smooth;
         }
         
@@ -444,8 +445,8 @@
     <div class="container">
         <header class="animate-on-scroll" data-animate style="text-align:center; margin:2rem 1rem;">
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">内容版本：202510052235-0</p>
-            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V15 - 优化了动画</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">内容版本：202602181728-0</p>
+            <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">网页版本：V16 - 修复了无法滚动的问题</p>
             <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过下方的搜索框来搜索作品。</p>
             <p style="color:#9ca3af; margin-bottom:1rem; font-size:1.125rem;">可以通过点击标签来跳转到对应等级。</p>
         </header>
@@ -474,7 +475,7 @@
         
         <!-- 页脚 -->
         <footer class="animate-on-scroll" data-animate style="margin-top:4rem; text-align:center; color:#6b7280; font-size:0.875rem;">
-            <p>© 2025 半生风血 保留所有权利</p>
+            <p>© 2025 ~ 2026 半生风血 保留所有权利。</p>
             <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
             <p style="margin-top:0.5rem;">想要将自己的作品展示在榜上的可以主动联系我。</p>
             <p style="margin-top:0.5rem;">我的邮箱：windblood@foxmail.com</p>
@@ -483,465 +484,525 @@
     </div>
 
     <script>
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', () => {
-            window.scrollTo(0,0);
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo(0,0);
+        
+        // ===== 修复滚动问题的代码（放在最前面）=====
+        // 1. 移除 overscrollBehavior 限制
+        document.body.style.overscrollBehavior = 'auto';
+        
+        // 2. 确保 body 和 html 的滚动属性正确
+        document.documentElement.style.overflowY = 'scroll';
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.overflowY = 'scroll';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.height = 'auto';
+        document.documentElement.style.height = 'auto';
+        
+        // 3. 添加修复样式
+        const scrollFixStyle = document.createElement('style');
+        scrollFixStyle.textContent = `
+            /* 确保滚动容器正确 */
+            html, body {
+                overflow-y: scroll !important;
+                overflow-x: hidden !important;
+                height: auto !important;
+                min-height: 100vh !important;
+                -webkit-overflow-scrolling: touch !important;
+                overscroll-behavior: auto !important;
+                position: relative !important;
+            }
             
-            // 等级排序
-            const tierOrder = ['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-'];
-            const cardTemplates = document.querySelectorAll('div[tier-template] .tier-card');
+            /* 主容器不拦截滚动 */
+            .container {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                pointer-events: auto;
+            }
             
-            // 处理卡片模板
-            const cards = Array.from(cardTemplates).map(template => {
-                const card = template.cloneNode(true);
-                let tier = card.getAttribute('data-tier');
-                const kind = card.getAttribute('data-kind');
-                
-                // 检查tier是否有效，无效则设置为X
-                if(!tier || !tierOrder.includes(tier)) {
-                    tier = 'X';
-                    card.setAttribute('data-tier', 'X');
-                }
-                
-                // 创建等级徽章
-                const tierBadge = document.createElement('div');
-                tierBadge.className = 'tier-badge';
-                tierBadge.setAttribute('data-tier', tier);
-                tierBadge.textContent = tier;
-                
-                // 确保卡片有相对定位容器
-                let relativeContainer = card.querySelector('[style*="position:relative"]');
-                if(!relativeContainer){
-                    relativeContainer = document.createElement('div');
-                    relativeContainer.style.position = 'relative';
-                    while(card.firstChild) relativeContainer.appendChild(card.firstChild);
-                    card.appendChild(relativeContainer);
-                }
-                relativeContainer.appendChild(tierBadge);
-                
-                // 添加设备角标
-                if (kind === 'mobile' || kind === 'pc') {
-                    const deviceBadge = document.createElement('div');
-                    deviceBadge.className = `device-badge ${kind}`;
-                    
-                    // 使用FontAwesome图标
-                    const icon = document.createElement('i');
-                    icon.className = kind === 'mobile' ? 'fa fa-mobile' : 'fa fa-laptop';
-                    
-                    const text = document.createElement('span');
-                    text.textContent = kind === 'mobile' ? '移动端' : '电脑端';
-                    
-                    deviceBadge.appendChild(icon);
-                    deviceBadge.appendChild(text);
-                    relativeContainer.appendChild(deviceBadge);
-                }
-                
-                return card;
-            });
+            /* 背景装饰不拦截事件 */
+            .background-decoration {
+                pointer-events: none !important;
+                position: fixed;
+                z-index: -1;
+            }
             
-            // 卡片排序
-            cards.sort((a, b) => {
-                const aTier = a.getAttribute('data-tier');
-                const bTier = b.getAttribute('data-tier');
-                
-                // X级排在最后
-                if(aTier === 'X' && bTier === 'X') return 0;
-                if(aTier === 'X') return 1;
-                if(bTier === 'X') return -1;
-                
-                const aIdx = tierOrder.indexOf(aTier);
-                const bIdx = tierOrder.indexOf(bTier);
-                if(aIdx === -1 && bIdx === -1) return 0;
-                if(aIdx === -1) return 1;
-                if(bIdx === -1) return -1;
-                return aIdx - bIdx;
-            });
+            /* 卡片内容滚动区域 */
+            .card-details {
+                overflow-y: hidden;
+                transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+                pointer-events: auto;
+            }
             
-            // 按等级分组
-            const tierGroups = {S:[], A:[], B:[], C:[], D:[], unknown:[]};
-            cards.forEach(card => {
-                const tier = card.getAttribute('data-tier');
-                if(tier === 'X') {
-                    tierGroups.unknown.push(card);
-                } else if(tier.startsWith('S')) tierGroups.S.push(card);
-                else if(tier.startsWith('A')) tierGroups.A.push(card);
-                else if(tier.startsWith('B')) tierGroups.B.push(card);
-                else if(tier.startsWith('C')) tierGroups.C.push(card);
-                else if(tier.startsWith('D')) tierGroups.D.push(card);
-                else tierGroups.unknown.push(card);
-            });
+            .card-details[style*="max-height: 0px"] {
+                overflow-y: hidden !important;
+            }
             
-            // 渲染分组内容
-            const container = document.getElementById('sortedContent');
-            ['S','A','B','C','D','unknown'].forEach(group => {
-                if(tierGroups[group].length){
-                    const groupEl = document.createElement('div');
-                    groupEl.className = 'tier-group animate-on-scroll';
-                    groupEl.setAttribute('data-animate','true');
-                    groupEl.id = `tier-${group}`; // 添加ID用于跳转
-                    
-                    const title = document.createElement('h3');
-                    title.className = `tier-group-title ${group}`;
-                    title.textContent = group === 'unknown' ? `未评价 (${tierGroups[group].length}个)` : `${group}级别 (${tierGroups[group].length}个)`;
-                    
-                    const grid = document.createElement('div');
-                    grid.className = 'card-grid';
-                    tierGroups[group].forEach(card => grid.appendChild(card));
-                    
-                    groupEl.append(title, grid);
-                    container.appendChild(groupEl);
+            .card-details:not([style*="max-height: 0px"]) {
+                overflow-y: auto !important;
+            }
+            
+            /* 确保卡片不拦截滚动 */
+            .tier-card {
+                pointer-events: auto;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* 绝对定位元素不拦截事件 */
+            .tier-badge,
+            .device-badge,
+            .image-placeholder,
+            .loading-spinner {
+                pointer-events: none !important;
+            }
+            
+            /* 修复动画期间的滚动 */
+            .tier-card.exiting,
+            .tier-group.exiting,
+            .tier-card.entering,
+            .tier-group.entering {
+                pointer-events: none !important;
+            }
+        `;
+        document.head.appendChild(scrollFixStyle);
+        
+        // 4. 修改 Intersection Observer 配置，避免干扰滚动
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    entry.target.classList.add('animate-visible');
+                    // 不取消观察，让动画可以重复触发（如果需要）
                 }
             });
-            
-            // 添加等级标签点击事件
-            document.querySelectorAll('.tier-label').forEach(label => {
-                label.addEventListener('click', () => {
-                    const tier = label.getAttribute('data-tier');
-                    const targetElement = document.getElementById(`tier-${tier}`);
-                    
-                    if (targetElement) {
-                        // 计算偏移量，考虑固定导航栏等
-                        const offsetTop = targetElement.offsetTop - 80;
-                        
-                        // 平滑滚动到目标位置
-                        window.scrollTo({
-                            top: offsetTop,
-                            behavior: 'smooth'
-                        });
-                        
-                        // 添加高亮效果
-                        targetElement.style.transition = 'box-shadow 0.5s ease, border-radius 0.5s ease';
-                        targetElement.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.3)';
-                        targetElement.style.borderRadius = '12px';
-                        
-                        // 移除高亮效果
-                        setTimeout(() => {
-                            targetElement.style.boxShadow = '';
-                        }, 1500);
-                    }
-                });
-            });
-            
-            // 处理图片加载和动画
-            document.querySelectorAll('.tier-card').forEach(card => {
-                // 添加加载状态类
-                card.classList.add('loading');
-                
-                const img = card.querySelector('img');
-                if (img) {
-                    // 创建图片容器和占位符
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-container';
-                    
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'image-placeholder';
-                    
-                    const spinner = document.createElement('div');
-                    spinner.className = 'loading-spinner';
-                    
-                    placeholder.appendChild(spinner);
-                    imageContainer.appendChild(placeholder);
-                    
-                    // 将图片移动到容器中
-                    const imgParent = img.parentNode;
-                    imgParent.insertBefore(imageContainer, img);
-                    imageContainer.appendChild(img);
-                    
-                    // 移除图片原有的类，添加新的类
-                    img.className = 'card-image';
-                    
-                    // 图片加载完成后
-                    if (img.complete) {
-                        handleImageLoad(img, imageContainer, placeholder, card);
-                    } else {
-                        img.addEventListener('load', () => {
-                            handleImageLoad(img, imageContainer, placeholder, card);
-                        });
-                        
-                        img.addEventListener('error', () => {
-                            handleImageError(placeholder, imageContainer, card);
-                        });
-                    }
-                } else {
-                    // 如果没有图片，直接移除加载状态
-                    setTimeout(() => {
-                        card.classList.remove('loading');
-                    }, 500);
-                }
-                
-                const details = card.querySelector('.card-details');
-                if(!details) return;
-                
-                details.style.maxHeight = 'none';
-                details.style.overflow = 'visible';
-                const h = details.scrollHeight + 20;
-                details.style.maxHeight = '0px';
-                details.style.overflow = 'hidden';
-                
-                card.addEventListener('click', e => {
-                    e.stopPropagation();
-                    const isOpen = details.style.maxHeight && details.style.maxHeight !== '0px';
-                    const icon = card.querySelector('.fa-chevron-down');
-                    const footerText = card.querySelector('.card-footer-text');
-                    
-                    if(isOpen){
-                        details.style.maxHeight = '0px';
-                        icon.classList.remove('rotate-180');
-                        card.classList.remove('card-expanded');
-                        setTimeout(() => {
-                            footerText.style.opacity = '1';
-                            footerText.style.transform = 'translateY(0)';
-                        }, 150);
-                    } else {
-                        details.style.maxHeight = h + 'px';
-                        icon.classList.add('rotate-180');
-                        card.classList.add('card-expanded');
-                        footerText.style.opacity = '0';
-                        footerText.style.transform = 'translateY(10px)';
-                    }
-                });
-            });
-            
-            // 滚动动画观察器
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting){
-                        entry.target.classList.add('animate-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {threshold:0.15, rootMargin:'0px 0px -10px 0px'});
-            
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px',  // 移除负边距
+            root: null  // 使用视口作为根
+        });
+        
+        // 5. 延迟观察，避免初始加载时的滚动干扰
+        setTimeout(() => {
             document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
-            document.body.style.overscrollBehavior = 'none';
-
-            // 根据等级设置详情标题颜色
-            document.querySelectorAll('.tier-card').forEach(card => {
-                const tier = card.getAttribute('data-tier');
-                const detailsTitles = card.querySelectorAll('.details-title');
+        }, 500);
+        
+        // 等级排序
+        const tierOrder = ['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-'];
+        const cardTemplates = document.querySelectorAll('div[tier-template] .tier-card');
+        
+        // 处理卡片模板
+        const cards = Array.from(cardTemplates).map(template => {
+            const card = template.cloneNode(true);
+            let tier = card.getAttribute('data-tier');
+            const kind = card.getAttribute('data-kind');
+            
+            // 检查tier是否有效，无效则设置为X
+            if(!tier || !tierOrder.includes(tier)) {
+                tier = 'X';
+                card.setAttribute('data-tier', 'X');
+            }
+            
+            // 创建等级徽章
+            const tierBadge = document.createElement('div');
+            tierBadge.className = 'tier-badge';
+            tierBadge.setAttribute('data-tier', tier);
+            tierBadge.textContent = tier;
+            
+            // 确保卡片有相对定位容器
+            let relativeContainer = card.querySelector('[style*="position:relative"]');
+            if(!relativeContainer){
+                relativeContainer = document.createElement('div');
+                relativeContainer.style.position = 'relative';
+                while(card.firstChild) relativeContainer.appendChild(card.firstChild);
+                card.appendChild(relativeContainer);
+            }
+            relativeContainer.appendChild(tierBadge);
+            
+            // 添加设备角标
+            if (kind === 'mobile' || kind === 'pc') {
+                const deviceBadge = document.createElement('div');
+                deviceBadge.className = `device-badge ${kind}`;
                 
-                // 根据等级确定颜色
-                let color;
-                if (tier.startsWith('S')) color = '#ff3a3a';
-                else if (tier.startsWith('A')) color = '#ff9500';
-                else if (tier.startsWith('B')) color = '#ffcc00';
-                else if (tier.startsWith('C')) color = '#34c759';
-                else if (tier.startsWith('D')) color = '#007aff';
-                else color = '#ffffff'; // 未知等级
+                // 使用FontAwesome图标
+                const icon = document.createElement('i');
+                icon.className = kind === 'mobile' ? 'fa fa-mobile' : 'fa fa-laptop';
                 
-                // 应用颜色到所有详情标题
-                detailsTitles.forEach(title => {
-                    title.style.color = color;
-                });
+                const text = document.createElement('span');
+                text.textContent = kind === 'mobile' ? '移动端' : '电脑端';
+                
+                deviceBadge.appendChild(icon);
+                deviceBadge.appendChild(text);
+                relativeContainer.appendChild(deviceBadge);
+            }
+            
+            return card;
+        });
+        
+        // 卡片排序
+        cards.sort((a, b) => {
+            const aTier = a.getAttribute('data-tier');
+            const bTier = b.getAttribute('data-tier');
+            
+            // X级排在最后
+            if(aTier === 'X' && bTier === 'X') return 0;
+            if(aTier === 'X') return 1;
+            if(bTier === 'X') return -1;
+            
+            const aIdx = tierOrder.indexOf(aTier);
+            const bIdx = tierOrder.indexOf(bTier);
+            if(aIdx === -1 && bIdx === -1) return 0;
+            if(aIdx === -1) return 1;
+            if(bIdx === -1) return -1;
+            return aIdx - bIdx;
+        });
+        
+        // 按等级分组
+        const tierGroups = {S:[], A:[], B:[], C:[], D:[], unknown:[]};
+        cards.forEach(card => {
+            const tier = card.getAttribute('data-tier');
+            if(tier === 'X') {
+                tierGroups.unknown.push(card);
+            } else if(tier.startsWith('S')) tierGroups.S.push(card);
+            else if(tier.startsWith('A')) tierGroups.A.push(card);
+            else if(tier.startsWith('B')) tierGroups.B.push(card);
+            else if(tier.startsWith('C')) tierGroups.C.push(card);
+            else if(tier.startsWith('D')) tierGroups.D.push(card);
+            else tierGroups.unknown.push(card);
+        });
+        
+        // 渲染分组内容
+        const container = document.getElementById('sortedContent');
+        ['S','A','B','C','D','unknown'].forEach(group => {
+            if(tierGroups[group].length){
+                const groupEl = document.createElement('div');
+                groupEl.className = 'tier-group animate-on-scroll';
+                groupEl.setAttribute('data-animate','true');
+                groupEl.id = `tier-${group}`;
+                
+                const title = document.createElement('h3');
+                title.className = `tier-group-title ${group}`;
+                title.textContent = group === 'unknown' ? `未评价 (${tierGroups[group].length}个)` : `${group}级别 (${tierGroups[group].length}个)`;
+                
+                const grid = document.createElement('div');
+                grid.className = 'card-grid';
+                tierGroups[group].forEach(card => grid.appendChild(card));
+                
+                groupEl.append(title, grid);
+                container.appendChild(groupEl);
+            }
+        });
+        
+        // 添加等级标签点击事件
+        document.querySelectorAll('.tier-label').forEach(label => {
+            label.addEventListener('click', () => {
+                const tier = label.getAttribute('data-tier');
+                const targetElement = document.getElementById(`tier-${tier}`);
+                
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 80;
+                    
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    targetElement.style.transition = 'box-shadow 0.5s ease, border-radius 0.5s ease';
+                    targetElement.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.3)';
+                    targetElement.style.borderRadius = '12px';
+                    
+                    setTimeout(() => {
+                        targetElement.style.boxShadow = '';
+                    }, 1500);
+                }
             });
-
-            // 图片加载处理函数
-            function handleImageLoad(img, imageContainer, placeholder, card) {
-                // 直接设置loaded类，让透明度和缩放同时进行
-                img.classList.add('loaded');
+        });
+        
+        // 处理图片加载和动画
+        document.querySelectorAll('.tier-card').forEach(card => {
+            card.classList.add('loading');
+            
+            const img = card.querySelector('img');
+            if (img) {
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
                 
-                // 获取图片自然高度并设置容器高度
-                const naturalHeight = img.naturalHeight;
-                const naturalWidth = img.naturalWidth;
-                const aspectRatio = naturalHeight / naturalWidth;
+                const placeholder = document.createElement('div');
+                placeholder.className = 'image-placeholder';
                 
-                // 根据图片比例设置容器高度
-                const containerWidth = imageContainer.offsetWidth;
-                const targetHeight = containerWidth * aspectRatio;
+                const spinner = document.createElement('div');
+                spinner.className = 'loading-spinner';
                 
-                // 平滑过渡到正确高度
-                imageContainer.style.transition = 'height 0.5s ease';
-                imageContainer.style.height = targetHeight + 'px';
+                placeholder.appendChild(spinner);
+                imageContainer.appendChild(placeholder);
                 
-                // 同时隐藏占位符和移除加载状态
+                const imgParent = img.parentNode;
+                imgParent.insertBefore(imageContainer, img);
+                imageContainer.appendChild(img);
+                
+                img.className = 'card-image';
+                
+                if (img.complete) {
+                    handleImageLoad(img, imageContainer, placeholder, card);
+                } else {
+                    img.addEventListener('load', () => {
+                        handleImageLoad(img, imageContainer, placeholder, card);
+                    });
+                    
+                    img.addEventListener('error', () => {
+                        handleImageError(placeholder, imageContainer, card);
+                    });
+                }
+            } else {
                 setTimeout(() => {
-                    placeholder.classList.add('hidden');
                     card.classList.remove('loading');
                 }, 500);
             }
-
-            function handleImageError(placeholder, imageContainer, card) {
-                placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
-                setTimeout(() => {
-                    placeholder.classList.add('hidden');
-                    // 即使加载失败也保持固定高度
-                    card.classList.remove('loading');
-                }, 300);
-            }
-
-            // 初始化搜索功能
-            const searchInput = document.getElementById('scos-search');
-            const clearBtn = document.querySelector('.clear-btn');
-            const allCards = document.querySelectorAll('.tier-card');
-
-            // 确保所有卡片初始状态正确
-            allCards.forEach(card => {
-                card.style.display = 'flex';
-                card.classList.add('search-visible');
-            });
-
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                const searchValue = this.value.toLowerCase().trim();
+            
+            const details = card.querySelector('.card-details');
+            if(!details) return;
+            
+            details.style.maxHeight = 'none';
+            details.style.overflow = 'visible';
+            const h = details.scrollHeight + 20;
+            details.style.maxHeight = '0px';
+            details.style.overflow = 'hidden';
+            
+            card.addEventListener('click', e => {
+                e.stopPropagation();
+                const isOpen = details.style.maxHeight && details.style.maxHeight !== '0px';
+                const icon = card.querySelector('.fa-chevron-down');
+                const footerText = card.querySelector('.card-footer-text');
                 
-                // 显示/隐藏清除按钮
-                if (searchValue.length > 0) {
-                    clearBtn.classList.add('visible');
+                if(isOpen){
+                    details.style.maxHeight = '0px';
+                    details.style.overflowY = 'hidden';
+                    if (icon) icon.classList.remove('rotate-180');
+                    card.classList.remove('card-expanded');
+                    setTimeout(() => {
+                        if (footerText) {
+                            footerText.style.opacity = '1';
+                            footerText.style.transform = 'translateY(0)';
+                        }
+                    }, 150);
                 } else {
-                    clearBtn.classList.remove('visible');
+                    details.style.maxHeight = h + 'px';
+                    setTimeout(() => {
+                        details.style.overflowY = 'auto';
+                    }, 500);
+                    if (icon) icon.classList.add('rotate-180');
+                    card.classList.add('card-expanded');
+                    if (footerText) {
+                        footerText.style.opacity = '0';
+                        footerText.style.transform = 'translateY(10px)';
+                    }
                 }
-                
-                // 取消之前的搜索
-                clearTimeout(searchTimeout);
-                
-                // 如果搜索词为空，立即显示所有内容
-                if (searchValue.length === 0) {
-                    filterCards('');
-                    return;
-                }
-                
-                // 设置新的搜索超时
-                searchTimeout = setTimeout(() => {
-                    filterCards(searchValue);
-                }, 200); // 减少延迟到200ms
             });
-
-            // 清除按钮功能
-            clearBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                clearBtn.classList.remove('visible');
-                filterCards('');
-            });
-
-            function getTransitionTime(selector, prop = 'transition-duration') {
-                const el = document.querySelector(selector);
-                if (!el) return 300; // fallback
-                const dur = getComputedStyle(el).getPropertyValue(prop);
-                if (!dur) return 300;
-                return parseFloat(dur) * 1000; // 转 ms
-            }
-
-            function filterCards(searchTerm) {
-                const isSearching = searchTerm.length > 0;
-                const exitTime = getTransitionTime('.tier-card.exiting') || 300;
-                const enterTime = getTransitionTime('.tier-card.entering') || 400;
-
-                const groups = document.querySelectorAll('.tier-group');
-
-                // --- 阶段一：所有卡片 & 分组 → 退出动画 ---
-                allCards.forEach(c => {
-                    c.classList.add('exiting');
-                    // 确保退出动画同时应用透明度和缩放
-                    c.style.transform = 'scale(0.8) translateY(20px)';
-                    c.style.opacity = '0';
-                });
-                groups.forEach(g => {
-                    g.classList.add('exiting');
-                    g.style.transform = 'scale(0.8) translateY(20px)';
-                    g.style.opacity = '0';
-                });
-
-                // --- 阶段二：等待退出动画结束，再更新DOM ---
-                setTimeout(() => {
-                    allCards.forEach(card => {
-                        const title = card.querySelector('.card-title').textContent.toLowerCase();
-                        const match = title.includes(searchTerm);
-
-                        card.classList.remove('exiting', 'entering');
-                        card.style.transform = '';
-                        card.style.opacity = '';
-
-                        if (!isSearching || match) {
-                            // 匹配的 → 先 invisible，等入场
-                            card.classList.remove('search-hidden');
-                            card.classList.add('search-visible', 'invisible');
-                        } else {
-                            // 不匹配的 → 完全隐藏
-                            card.classList.remove('search-visible');
-                            card.classList.add('search-hidden');
-                            // 添加done类确保彻底隐藏
-                            setTimeout(() => {
-                                card.classList.add('done');
-                            }, 50);
-                        }
-                    });
-
-                    groups.forEach(group => {
-                        const cards = group.querySelectorAll('.tier-card');
-                        const visibleCards = Array.from(cards).filter(c => c.classList.contains('search-visible'));
-                        const visibleCount = visibleCards.length;
-
-                        const tier = group.id.replace('tier-', '');
-                        const titleElement = group.querySelector('.tier-group-title');
-
-                        group.classList.remove('exiting', 'entering');
-                        group.style.transform = '';
-                        group.style.opacity = '';
-
-                        if (visibleCount > 0) {
-                            group.classList.remove('search-hidden');
-                            group.classList.add('search-visible', 'invisible');
-                            titleElement.textContent = tier === 'unknown'
-                            ? `未评价 (${visibleCount}个)`
-                            : `${tier}级别 (${visibleCount}个)`;
-                        } else {
-                            group.classList.add('search-hidden');
-                            group.classList.remove('search-visible');
-                            // 添加done类确保彻底隐藏
-                            setTimeout(() => {
-                                group.classList.add('done');
-                            }, 50);
-                        }
-                    });
-
-                    // --- 阶段三：触发入场动画 ---
-                    requestAnimationFrame(() => {
-                        allCards.forEach(card => {
-                            if (card.classList.contains('invisible')) {
-                                card.classList.remove('invisible', 'done');
-                                card.classList.add('entering');
-                                // 确保入场动画同时应用透明度和缩放
-                                card.style.transform = 'scale(0.8) translateY(20px)';
-                                card.style.opacity = '0';
-                                
-                                // 强制重排，确保动画生效
-                                void card.offsetWidth;
-                                
-                                card.classList.add('search-visible');
-                                card.style.transform = 'scale(1) translateY(0)';
-                                card.style.opacity = '1';
-                            }
-                        });
-                        groups.forEach(group => {
-                            if (group.classList.contains('invisible')) {
-                                group.classList.remove('invisible', 'done');
-                                group.classList.add('entering');
-                                // 确保入场动画同时应用透明度和缩放
-                                group.style.transform = 'scale(0.8) translateY(20px)';
-                                group.style.opacity = '0';
-                                
-                                // 强制重排，确保动画生效
-                                void group.offsetWidth;
-                                
-                                group.classList.add('search-visible');
-                                group.style.transform = 'scale(1) translateY(0)';
-                                group.style.opacity = '1';
-                            }
-                        });
-
-                        // 清理entering状态
-                        setTimeout(() => {
-                            document.querySelectorAll('.entering').forEach(el => {
-                                el.classList.remove('entering');
-                                el.style.transform = '';
-                                el.style.opacity = '';
-                            });
-                        }, enterTime);
-                    });
-                }, exitTime);
-            }
         });
-    </script>
+        
+        // 根据等级设置详情标题颜色
+        document.querySelectorAll('.tier-card').forEach(card => {
+            const tier = card.getAttribute('data-tier');
+            const detailsTitles = card.querySelectorAll('.details-title');
+            
+            let color;
+            if (tier.startsWith('S')) color = '#ff3a3a';
+            else if (tier.startsWith('A')) color = '#ff9500';
+            else if (tier.startsWith('B')) color = '#ffcc00';
+            else if (tier.startsWith('C')) color = '#34c759';
+            else if (tier.startsWith('D')) color = '#007aff';
+            else color = '#ffffff';
+            
+            detailsTitles.forEach(title => {
+                title.style.color = color;
+            });
+        });
+
+        // 图片加载处理函数
+        function handleImageLoad(img, imageContainer, placeholder, card) {
+            img.classList.add('loaded');
+            
+            const naturalHeight = img.naturalHeight;
+            const naturalWidth = img.naturalWidth;
+            const aspectRatio = naturalHeight / naturalWidth;
+            
+            const containerWidth = imageContainer.offsetWidth;
+            const targetHeight = containerWidth * aspectRatio;
+            
+            imageContainer.style.transition = 'height 0.5s ease';
+            imageContainer.style.height = targetHeight + 'px';
+            
+            setTimeout(() => {
+                placeholder.classList.add('hidden');
+                placeholder.style.pointerEvents = 'none';
+                card.classList.remove('loading');
+            }, 500);
+        }
+
+        function handleImageError(placeholder, imageContainer, card) {
+            placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
+            setTimeout(() => {
+                placeholder.classList.add('hidden');
+                placeholder.style.pointerEvents = 'none';
+                card.classList.remove('loading');
+            }, 300);
+        }
+
+        // 初始化搜索功能
+        const searchInput = document.getElementById('scos-search');
+        const clearBtn = document.querySelector('.clear-btn');
+        const allCards = document.querySelectorAll('.tier-card');
+
+        allCards.forEach(card => {
+            card.style.display = 'flex';
+            card.classList.add('search-visible');
+        });
+
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase().trim();
+            
+            if (searchValue.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            clearTimeout(searchTimeout);
+            
+            if (searchValue.length === 0) {
+                filterCards('');
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                filterCards(searchValue);
+            }, 200);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            filterCards('');
+        });
+
+        function getTransitionTime(selector, prop = 'transition-duration') {
+            const el = document.querySelector(selector);
+            if (!el) return 300;
+            const dur = getComputedStyle(el).getPropertyValue(prop);
+            if (!dur) return 300;
+            return parseFloat(dur) * 1000;
+        }
+
+        function filterCards(searchTerm) {
+            const isSearching = searchTerm.length > 0;
+            const exitTime = getTransitionTime('.tier-card.exiting') || 300;
+            const enterTime = getTransitionTime('.tier-card.entering') || 400;
+
+            const groups = document.querySelectorAll('.tier-group');
+
+            allCards.forEach(c => {
+                c.classList.add('exiting');
+                c.style.transform = 'scale(0.8) translateY(20px)';
+                c.style.opacity = '0';
+            });
+            groups.forEach(g => {
+                g.classList.add('exiting');
+                g.style.transform = 'scale(0.8) translateY(20px)';
+                g.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                allCards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const match = title.includes(searchTerm);
+
+                    card.classList.remove('exiting', 'entering');
+                    card.style.transform = '';
+                    card.style.opacity = '';
+
+                    if (!isSearching || match) {
+                        card.classList.remove('search-hidden');
+                        card.classList.add('search-visible', 'invisible');
+                    } else {
+                        card.classList.remove('search-visible');
+                        card.classList.add('search-hidden');
+                        setTimeout(() => {
+                            card.classList.add('done');
+                        }, 50);
+                    }
+                });
+
+                groups.forEach(group => {
+                    const cards = group.querySelectorAll('.tier-card');
+                    const visibleCards = Array.from(cards).filter(c => c.classList.contains('search-visible'));
+                    const visibleCount = visibleCards.length;
+
+                    const tier = group.id.replace('tier-', '');
+                    const titleElement = group.querySelector('.tier-group-title');
+
+                    group.classList.remove('exiting', 'entering');
+                    group.style.transform = '';
+                    group.style.opacity = '';
+
+                    if (visibleCount > 0) {
+                        group.classList.remove('search-hidden');
+                        group.classList.add('search-visible', 'invisible');
+                        titleElement.textContent = tier === 'unknown'
+                        ? `未评价 (${visibleCount}个)`
+                        : `${tier}级别 (${visibleCount}个)`;
+                    } else {
+                        group.classList.add('search-hidden');
+                        group.classList.remove('search-visible');
+                        setTimeout(() => {
+                            group.classList.add('done');
+                        }, 50);
+                    }
+                });
+
+                requestAnimationFrame(() => {
+                    allCards.forEach(card => {
+                        if (card.classList.contains('invisible')) {
+                            card.classList.remove('invisible', 'done');
+                            card.classList.add('entering');
+                            card.style.transform = 'scale(0.8) translateY(20px)';
+                            card.style.opacity = '0';
+                            
+                            void card.offsetWidth;
+                            
+                            card.classList.add('search-visible');
+                            card.style.transform = 'scale(1) translateY(0)';
+                            card.style.opacity = '1';
+                        }
+                    });
+                    groups.forEach(group => {
+                        if (group.classList.contains('invisible')) {
+                            group.classList.remove('invisible', 'done');
+                            group.classList.add('entering');
+                            group.style.transform = 'scale(0.8) translateY(20px)';
+                            group.style.opacity = '0';
+                            
+                            void group.offsetWidth;
+                            
+                            group.classList.add('search-visible');
+                            group.style.transform = 'scale(1) translateY(0)';
+                            group.style.opacity = '1';
+                        }
+                    });
+
+                    setTimeout(() => {
+                        document.querySelectorAll('.entering').forEach(el => {
+                            el.classList.remove('entering');
+                            el.style.transform = '';
+                            el.style.opacity = '';
+                        });
+                    }, enterTime);
+                });
+            }, exitTime);
+        }
+    });
+</script>
     
     <!-- 卡片模板 -->
     <div style="display:none;" tier-template>
@@ -999,16 +1060,17 @@
                             <li>极致的稳定性，目前没有发现任何问题</li>
                             <li>方便用户的细节和小彩蛋一堆</li>
                             <li>作者主打一个听劝</li>
-                            <li>整个作品没有照搬任何其它作品的代码，完全自研</li>
+                            <li>整个作品没有照搬任何其它作品的代码，完全自研（较主观）</li>
                             <li>Clearly 动态壁纸和 Cleak 触控系统、完美跟随算法</li>
+                            <li>有触控优先级</li>
                         </ul>
                         <h4 class="details-title">缺点</h4>
                         <ul class="details-list">
                             <li>目前应用和功能较少</li>
-                            <li>使用单层图标动画而非双层</li>
+                            <li>使用单层图标动画而非双层（可以算风格但是大多数人不会这么想）</li>
                         </ul>
                         <h4 class="details-title">总结</h4>
-                        <p class="details-text">Clear UI NEXT 注重于细节和流畅度，稳定性极高，体验者用连点器没有测出任何问题；文件大小仅有 333 KB。该作品是其作者开发 3 年 SCOS 的经验大成。</p>
+                        <p class="details-text">Clear UI 注重于细节和流畅度，稳定性极高，体验者用连点器没有测出任何问题。该作品是其作者开发 3 年 SCOS 的经验大成。</p>
                     </div>
                 </div>
             </div>
@@ -1374,7 +1436,7 @@
                         </ul>
                         <h4 class="details-title">缺点</h4>
                         <ul class="details-list">
-                            <li>没有开机动画之类的，没仪式感</li>
+                            <li>有些动画不统一问题，比如控件不跟随窗口执行动画</li>
                             <li>UI 的色彩和形状都不顺眼，只能说很有衰哥的风格</li>
                             <li>代码全角色，积木数量多（这点可忽视）</li>
                         </ul>
@@ -1480,6 +1542,76 @@
                         </ul>
                         <h4 class="details-title">总结</h4>
                         <p class="details-text">也是一个还算不错的 SCOS，但是确实有很多莫名其妙且难以再现的 Bug。重写改变人生。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tier-card animate-on-scroll" data-tier="A" data-kind="mobile" data-animate>
+            <!-- <img src="ROS.png" alt="ROS Logo 展示" class="w-full h-48 object-cover"> -->
+            <div class="card-content">
+                <h3 class="card-title">Gama UI</h3>
+                <p class="card-description">一次堪称奇迹的进化，虽然还不够</p>
+                <div class="card-footer">
+                    <span class="card-footer-text" style="color:#6b7280;">点击查看详情</span>
+                    <i class="fa fa-chevron-down" style="color:#6b7280; transition:transform 0.3s ease;"></i>
+                </div>
+                <div class="card-details">
+                    <div class="card-details-content">
+                        <h4 class="details-title">该作品的作者</h4>
+                        <p class="details-text"><a href="https://space.bilibili.com/1770992344" class="author-link" target="_blank">3.exe</a></p>
+                        <h4 class="details-title">优点</h4>
+                        <ul class="details-list">
+                            <li>双层图标</li>
+                            <li>有能用且有用的设置 APP</li>
+                            <li>有手势反悔机制...Aurami UI 都没有，说了也不改，结果被 3.exe 做到了，惭愧吗哈哈</li>
+                            <li>触控优先级！！</li>
+                        </ul>
+                        <h4 class="details-title">缺点</h4>
+                        <ul class="details-list">
+                            <li>细节问题！各种不对齐，甚至还有专门设计出来让用户难受的（比如 "powered by QUICK" 字样）</li>
+                            <li>稳定性还差点哦...虽然已经不会触发严重 Bug 了</li>
+                        </ul>
+                        <h4 class="details-title">总结</h4>
+                        <p class="details-text">往好处想，这是 3.exe 做出来的；往坏处想，那些不对齐的文字、按钮等已经可以让人高血压了。期 die 完善。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tier-card animate-on-scroll" data-tier="A+" data-kind="mobile" data-animate>
+            <!-- <img src="ROS.png" alt="ROS Logo 展示" class="w-full h-48 object-cover"> -->
+            <div class="card-content">
+                <h3 class="card-title">UPT OS X</h3>
+                <p class="card-description">朴素但可靠</p>
+                <div class="card-footer">
+                    <span class="card-footer-text" style="color:#6b7280;">点击查看详情</span>
+                    <i class="fa fa-chevron-down" style="color:#6b7280; transition:transform 0.3s ease;"></i>
+                </div>
+                <div class="card-details">
+                    <div class="card-details-content">
+                        <h4 class="details-title">该作品的作者</h4>
+                        <p class="details-text"><a href="https://space.bilibili.com/3546716093549107" class="author-link" target="_blank">衰到极致</a></p>
+                        <h4 class="details-title">优点</h4>
+                        <ul class="details-list">
+                            <li>无敌的稳定性，不愧是衰哥</li>
+                            <li>有能用且有用的设置 APP（我复制了多少遍这句话了）</li>
+                            <li>有文件管理</li>
+                            <li>接入了 SimpleChat</li>
+                            <li>性能优化好</li>
+                            <li>触控优先级！！</li>
+                        </ul>
+                        <h4 class="details-title">缺点</h4>
+                        <ul class="details-list">
+                            <li>单层图标...虽然显然这可以被算作一种风格，但大多数人不这么想，哈哈</li>
+                            <li>关 APP 的回退手势灵敏度是不是有点太低了？可以考虑把判定线往上面移一点</li>
+                            <li>关于界面没做好</li>
+                            <li>奇怪的 UI 配色...和以前的 Clear 一个水准了</li>
+                            <li>细节问题！和 Gama 一样，各种不对齐和字太大等...</li>
+                            <li>SimpleChat 并没法用，虽然我知道是摄表那边的问题</li>
+                        </ul>
+                        <h4 class="details-title">总结</h4>
+                        <p class="details-text">实用性选手，美观程度一般般但是它功能比别人的多啊（雾）。建议修改细节，评分可以更高。</p>
                     </div>
                 </div>
             </div>
