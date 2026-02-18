@@ -1,0 +1,389 @@
+{
+  "cards": [
+    {
+      "tier": "S",
+      "kind": "mobile",
+      "title": "Free UI",
+      "description": "几乎全能的老牌 SCOS",
+      "image": "Free UI.png",
+      "author": "shxUwU",
+      "authorLink": "https://space.bilibili.com/3493107052054967",
+      "advantages": [
+        "双层图标，过渡流畅",
+        "功能较多",
+        "稳定性强，问题少",
+        "代码开源"
+      ],
+      "disadvantages": [
+        "部分中等性能设备运行会卡顿",
+        "代码量庞大且对新手来说难以编辑",
+        "使用了大量扩展，可能造成兼容性问题"
+      ],
+      "summary": "Free UI 目前可以说是最强的移动端 SCOS，动画无可挑剔，功能也比较多，除了性能和改编，几乎没有弱点。给个 S，留点进步空间。"
+    },
+    {
+      "tier": "S-",
+      "kind": "mobile",
+      "title": "Clear UI",
+      "description": "轻量稳定，单层图标的扛把子",
+      "image": "Clear UI.png",
+      "author": "半生风血",
+      "authorLink": "https://space.bilibili.com/622594904",
+      "advantages": [
+        "轻量化设计，运行十分流畅",
+        "没有使用任何扩展，原版 Scratch 也可运行",
+        "代码开源且易读，结构清晰",
+        "极致的稳定性，目前没有发现任何问题",
+        "方便用户的细节和小彩蛋一堆",
+        "作者主打一个听劝",
+        "整个作品没有照搬任何其它作品的代码，完全自研（较主观）",
+        "Clearly 动态壁纸和 Cleak 触控系统、完美跟随算法",
+        "有触控优先级"
+      ],
+      "disadvantages": [
+        "目前应用和功能较少",
+        "使用单层图标动画而非双层（可以算风格但是大多数人不会这么想）"
+      ],
+      "summary": "Clear UI 注重于细节和流畅度，稳定性极高，体验者用连点器没有测出任何问题。该作品是其作者开发 3 年 SCOS 的经验大成。"
+    },
+    {
+      "tier": "S-",
+      "kind": "mobile",
+      "title": "Mega Mobile UI",
+      "description": "动画杂而有序，甚好",
+      "image": null,
+      "author": "HT诺亚热茶",
+      "authorLink": "https://space.bilibili.com/1036950162",
+      "advantages": [
+        "动画流畅，体验奇妙，给人一种视觉盛宴的感觉",
+        "内容是做了一些的",
+        "锁屏啥的都差不多很完善"
+      ],
+      "disadvantages": [
+        "部分人会觉得这个动画很杂乱",
+        "内容和选项还是不够多"
+      ],
+      "summary": "Mega Mobile UI 的动画有人撑有人踩，争议较大，但它确实是一个相对较为完善的作品，期待开发者的迭代。"
+    },
+    {
+      "tier": "S-",
+      "kind": "pc",
+      "title": "Hypixice OS",
+      "description": "除了 Bug 几乎没有缺点的电脑端 SCOS",
+      "image": "Hypixice OS.png",
+      "author": "Hypixice",
+      "authorLink": "https://space.bilibili.com/1254022343",
+      "advantages": [
+        "功能丰富",
+        "动画对一个电脑端 SCOS 来说几乎完美",
+        "细节十分用心",
+        "使用了 Morden UI，本人很喜欢这种美术风格"
+      ],
+      "disadvantages": [
+        "性能有点不太好？",
+        "有一些小 Bug 比如图标和左侧按键的小标签"
+      ],
+      "summary": "该作品整体表现优秀且出彩，修复一些小细节上的瑕疵将会使其更加趋近于完美形态。期待开发者的维护。"
+    },
+    {
+      "tier": "A",
+      "kind": "mobile",
+      "title": "Nimble UI",
+      "description": "动画也不错，功能、稳定待打磨",
+      "image": null,
+      "author": "沅",
+      "authorLink": "https://space.bilibili.com/3493269686192311",
+      "advantages": [
+        "双层图标不错，堪比 Free UI",
+        "有锁屏、控制中心之类的"
+      ],
+      "disadvantages": [
+        "控制中心稍微有点 Bug",
+        "功能貌似还没做，只有动画演示"
+      ],
+      "summary": "Nimble 的动画可以说是优秀，和 Free UI 简直是一个量级的，若将功能和 Bug 修复及完善，那将是绝杀。"
+    },
+    {
+      "tier": "A",
+      "kind": "mobile",
+      "title": "Ocean UI Beta 2",
+      "description": "理应是神作，但实践存在，它的理论崩塌了...",
+      "image": "Ocean UI.png",
+      "author": "Potaaaato、Likele",
+      "authorLink": "https://space.bilibili.com/1872463271",
+      "advantages": [
+        "动画很无敌",
+        "有控制中心",
+        "有丝滑的 OOBE",
+        "交互性不错",
+        "APP 内容大概有个雏形"
+      ],
+      "disadvantages": [
+        "Bug 极多，比潘周聃他孙子青春期时头上的青春痘还多，严重影响用户体验",
+        "代码很屎山，这点可能是导致上面问题的元凶"
+      ],
+      "summary": "Ocean UI Beta 2 除了 Bug 和代码屎山，没有败笔。作者现在正在重构这个作品，希望能做出一份更好的作品。"
+    },
+    {
+      "tier": "A-",
+      "kind": "mobile",
+      "title": "HorBrk UI",
+      "description": "和前面那位不分上下，难舍难分...我说的是稳定性方面",
+      "image": null,
+      "author": "CramYing",
+      "authorLink": "https://space.bilibili.com/1289588890",
+      "advantages": [
+        "双层图标比较帅",
+        "控制中心",
+        "交互性"
+      ],
+      "disadvantages": [
+        "Bug 比较多，虽然没有潘周聃他孙子青春期时头上的青春痘多..."
+      ],
+      "summary": "毕竟已经停更了，我要给它提建议也没啥用了......向 CramYing 的新作品 SprkUI 看齐！"
+    },
+    {
+      "tier": "S",
+      "kind": "pc",
+      "title": "TechFure 3",
+      "description": "优雅至极，同行被吃席",
+      "image": "TechFure 3.png",
+      "author": "_KOSHINO_",
+      "authorLink": "https://space.bilibili.com/520948922",
+      "advantages": [
+        "动画优雅流畅",
+        "交互方式创新",
+        "UI 排版和设计十分独特且美观",
+        "功能超多，甚至可以播放视频、音乐和写代码"
+      ],
+      "disadvantages": [
+        "性能问题"
+      ],
+      "summary": "作品唯一的短板就是性能，除此以外，功能、动画、UI 都真的让人耳目一新，不得不说它是一个完善度较高、潜力极强的作品。希望作者后续能解决性能问题！"
+    },
+    {
+      "tier": "X",
+      "kind": null,
+      "title": "未知系统",
+      "description": "测试未知等级显示效果",
+      "image": null,
+      "author": "没有作者",
+      "authorLink": "https://example.com",
+      "advantages": [
+        "测试未知等级",
+        "应该显示白色背景",
+        "黑色文字"
+      ],
+      "disadvantages": [],
+      "summary": "这是一个测试卡片，用于展示未知等级的显示效果。"
+    },
+    {
+      "tier": "B-",
+      "kind": "mobile",
+      "title": "AiOS V8",
+      "description": "中规中矩",
+      "image": null,
+      "author": "3.exe",
+      "authorLink": "https://space.bilibili.com/1770992344",
+      "advantages": [
+        "(没用) 的 APP 比较多",
+        "有开机动画"
+      ],
+      "disadvantages": [
+        "APP 开启曲线调得像一坨",
+        "APP 任何一个地方按了都能触发关闭 APP",
+        "交互性差，例如按下去 APP 不等松开直接打开了",
+        "图层问题"
+      ],
+      "summary": "新版 AiOS 确实对比旧版有了非常之大的提升，作者也是比较听劝的。在此更改评分为 B-。"
+    },
+    {
+      "tier": "A-",
+      "kind": "mobile",
+      "title": "Arc OS",
+      "description": "Colid 改的，抖动问题很严重",
+      "image": null,
+      "author": "孤行的3044 (COLID STUDIO)",
+      "authorLink": "https://space.bilibili.com/1825564224",
+      "advantages": [
+        "功能全面",
+        "动画还可以，就是双层图标有点瑕疵",
+        "有锁屏、控制中心"
+      ],
+      "disadvantages": [
+        "APP 打开和关闭的动画有非常严重的抖动",
+        "据说 Bug 很多，但我本人没有遇到",
+        "UI 我个人觉得有点丑，为什么你们都只喷 Clear UI NEXT 的图标复古，不喷 Arc 的图标复古啊，是不是搞歧视"
+      ],
+      "summary": "这个作品虽然是 COLID 改的，且据说有很多小 Bug，但至少我本人没有遇到太多，给它一个 A- 我觉得是可以的。"
+    },
+    {
+      "tier": "A",
+      "kind": "mobile",
+      "title": "Fix UI 1",
+      "description": "有神奇 Bug，已停止维护",
+      "image": "Fix UI 1.png",
+      "author": "诸葛孔明",
+      "authorLink": "",
+      "advantages": [
+        "单层图标动画不错",
+        "有 OOBE (虽然没用)"
+      ],
+      "disadvantages": [
+        "Bug：把作品挂着不管，回去看会发现所有控件大小都变得很大并且会闪现，点击一下后恢复正常",
+        "作者已停止对它的维护",
+        "作者嘴臭、自大，很喜欢将自己的作品和别人的比较，之前发表过 \"SCOS 顶尖作品的作者都是男同\" 等严重冒犯他人的言论，非常恶心和招人厌",
+        "它的续作 Fix UI 2 也停更了，作者说给他 1000 元就立马更新",
+        "代码太多了，而且新手根本看不懂"
+      ],
+      "summary": "首先我要声明的是，缺点那里关于 Fix UI 1 作者的三观和人品是我自己在抱怨，把这个作品放在这个评级并没有参考作者人品的问题。这个作品和 Clear UI NEXT 差不多，但 Clear 的细节更完善且仍然在更新，而且稳定性和代码数量上 Clear 更胜一筹。A 评级，抬走不送。"
+    },
+    {
+      "tier": "B+",
+      "kind": "pc",
+      "title": "RadiumOS",
+      "description": "很好的空壳，期待完善",
+      "image": "RadiumOS.png",
+      "author": "Cyberexplorer",
+      "authorLink": "https://cyberneko.cn",
+      "advantages": [
+        "稳定性强",
+        "窗口引擎功能完善"
+      ],
+      "disadvantages": [
+        "只是个空壳，内容根本没做"
+      ],
+      "summary": "这是一个非常完善的电脑端 SCOS 引擎，只差内容就可以成为真神。给出 B+ 评分。"
+    },
+    {
+      "tier": "A+",
+      "kind": "pc",
+      "title": "OUCIS OS",
+      "description": "很好的电脑端 OS",
+      "image": "OUCIS OS.png",
+      "author": "衰到极致",
+      "authorLink": "https://space.bilibili.com/3546716093549107",
+      "advantages": [
+        "极致稳定",
+        "窗口管理做得特别好，遥遥领先",
+        "作品较流畅"
+      ],
+      "disadvantages": [
+        "有些动画不统一问题，比如控件不跟随窗口执行动画",
+        "UI 的色彩和形状都不顺眼，只能说很有衰哥的风格",
+        "代码全角色，积木数量多（这点可忽视）"
+      ],
+      "summary": "衰哥新作太强了，使我电脑旋转。把 UI 改一下就可以神作了。全角色这点见仁见智，我建议精简。"
+    },
+    {
+      "tier": "A",
+      "kind": "mobile",
+      "title": "SKY UI NEXT 4",
+      "description": "疑似第二个三层图标",
+      "image": "Sky UI NEXT 4.png",
+      "author": "科研swr",
+      "authorLink": "https://space.bilibili.com/2106027047",
+      "advantages": [
+        "有模糊",
+        "三层图标（？）而且不是 11U 那种稳定性极差的"
+      ],
+      "disadvantages": [
+        "在我的 M1 Macbook Air 上发热严重，有时会卡",
+        "没有手势动画",
+        "神奇的手势判定",
+        "APP 内容是图片，动不了"
+      ],
+      "summary": "性能问题建议改进，加上手势动画和 APP 内容。"
+    },
+    {
+      "tier": "B-",
+      "kind": "mobile",
+      "title": "ROS",
+      "description": "有诚意，但不多",
+      "image": null,
+      "author": "3.exe",
+      "authorLink": "https://space.bilibili.com/1770992344",
+      "advantages": [
+        "说实话没啥特别突出的",
+        "作者听劝",
+        "用了一个图标和界面之间虚像衔接的方案，支持一下创新",
+        "有二级菜单，这已经很难得了"
+      ],
+      "disadvantages": [
+        "动画还是不算太好",
+        "打开和关闭 APP 没有回退手势",
+        "拖动 APP 控件直接开消失动画，难绷",
+        "图标图层等细节问题仍未改善"
+      ],
+      "summary": "创新的想法是很好的，但是这个作品真的还只能算是移动端 SCOS 里比较一般的。建议优化上述内容。"
+    },
+    {
+      "tier": "B+",
+      "kind": "mobile",
+      "title": "Aura UI",
+      "description": "堪比 Ocean... 从各个方面",
+      "image": null,
+      "author": "一只琪露诺-9",
+      "authorLink": "https://space.bilibili.com/2025677704",
+      "advantages": [
+        "三层图标，动画和 Ocean 差不多",
+        "有能用且有用的设置 APP",
+        "开机动画好看",
+        "开关 APP 调得很舒服",
+        "可滑动翻页"
+      ],
+      "disadvantages": [
+        "稳定性不太好，虽然没 Ocean Bug 多",
+        "开关 APP 没有回退手势",
+        "设置里的 “MIUI 12.5” 等字样我不知道是干嘛的，上面也没标"
+      ],
+      "summary": "也是一个还算不错的 SCOS，但是确实有很多莫名其妙且难以再现的 Bug。重写改变人生。"
+    },
+    {
+      "tier": "A",
+      "kind": "mobile",
+      "title": "Gama UI",
+      "description": "一次堪称奇迹的进化，虽然还不够",
+      "image": null,
+      "author": "3.exe",
+      "authorLink": "https://space.bilibili.com/1770992344",
+      "advantages": [
+        "双层图标",
+        "有能用且有用的设置 APP",
+        "有手势反悔机制...Aurami UI 都没有，说了也不改，结果被 3.exe 做到了，惭愧吗哈哈",
+        "触控优先级！！"
+      ],
+      "disadvantages": [
+        "细节问题！各种不对齐，甚至还有专门设计出来让用户难受的（比如 \"powered by QUICK\" 字样）",
+        "稳定性还差点哦...虽然已经不会触发严重 Bug 了"
+      ],
+      "summary": "往好处想，这是 3.exe 做出来的；往坏处想，那些不对齐的文字、按钮等已经可以让人高血压了。期 die 完善。"
+    },
+    {
+      "tier": "A+",
+      "kind": "mobile",
+      "title": "UPT OS X",
+      "description": "朴素但可靠",
+      "image": null,
+      "author": "衰到极致",
+      "authorLink": "https://space.bilibili.com/3546716093549107",
+      "advantages": [
+        "无敌的稳定性，不愧是衰哥",
+        "有能用且有用的设置 APP（我复制了多少遍这句话了）",
+        "有文件管理",
+        "接入了 SimpleChat",
+        "性能优化好",
+        "触控优先级！！"
+      ],
+      "disadvantages": [
+        "单层图标...虽然显然这可以被算作一种风格，但大多数人不这么想，哈哈",
+        "关 APP 的回退手势灵敏度是不是有点太低了？可以考虑把判定线往上面移一点",
+        "关于界面没做好",
+        "奇怪的 UI 配色...和以前的 Clear 一个水准了",
+        "细节问题！和 Gama 一样，各种不对齐和字太大等...",
+        "SimpleChat 并没法用，虽然我知道是摄表那边的问题"
+      ],
+      "summary": "实用性选手，美观程度一般般但是它功能比别人的多啊（雾）。建议修改细节，评分可以更高。"
+    }
+  ]
+}
