@@ -480,6 +480,7 @@
             margin-bottom: 1rem; 
         }
 
+        /* ===== 角标 - 去掉悬停动画 ===== */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -494,11 +495,7 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(2px);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .tier-card:hover .tier-badge {
-            transform: scale(1.05);
-            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.6);
+            /* 移除所有transition和hover效果 */
         }
         .tier-badge[data-tier^="S"] { background: #ff3a3a; }
         .tier-badge[data-tier^="A"] { background: #ff9500; }
@@ -510,6 +507,7 @@
             color: #121212;
         }
 
+        /* 设备角标 - 也去掉悬停动画 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -526,10 +524,7 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.15);
             backdrop-filter: blur(2px);
-            transition: transform 0.2s;
-        }
-        .tier-card:hover .device-badge {
-            transform: scale(1.05);
+            /* 移除所有transition和hover效果 */
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
@@ -562,7 +557,7 @@
             transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
 
-        /* ===== Footer动画 - 完整恢复 ===== */
+        /* ===== Footer动画 ===== */
         footer {
             margin-top: 4rem;
             text-align: center;
@@ -624,7 +619,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V17 · 完整动画</div>
+            <div class="header-subtitle">网页版本号：V17 · 最终版</div>
         </header>
 
         <div id="sortedContent"></div>
