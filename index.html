@@ -311,16 +311,19 @@
             width: 100%;
             background: #1e1e1e;
             overflow: hidden;
-            min-height: 150px; /* 确保有最小高度 */
+            aspect-ratio: 16/9; /* 默认比例，加载后会被JS覆盖 */
         }
         
         .card-image {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover; /* 保持比例填充容器 */
             display: block;
             opacity: 0;
             transition: opacity 0.5s ease;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
             z-index: 1;
         }
         
@@ -340,11 +343,11 @@
             background: #1e1e1e;
             transition: opacity 0.5s ease;
             z-index: 2;
-            pointer-events: none;
         }
         
         .image-placeholder.hidden {
             opacity: 0;
+            pointer-events: none;
         }
         
         .loading-spinner {
@@ -432,7 +435,7 @@
             margin-bottom: 1rem; 
         }
 
-        /* 药丸角标 */
+        /* ===== 药丸角标 - 恢复颜色 ===== */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -447,9 +450,18 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(2px);
-            pointer-events: none;
+        }
+        .tier-badge[data-tier^="S"] { background: #ff3a3a; }
+        .tier-badge[data-tier^="A"] { background: #ff9500; }
+        .tier-badge[data-tier^="B"] { background: #ffcc00; color: #1e1e1e; }
+        .tier-badge[data-tier^="C"] { background: #34c759; }
+        .tier-badge[data-tier^="D"] { background: #007aff; }
+        .tier-badge:not([data-tier^="S"]):not([data-tier^="A"]):not([data-tier^="B"]):not([data-tier^="C"]):not([data-tier^="D"]) {
+            background: rgba(255,255,255,0.9);
+            color: #121212;
         }
 
+        /* 设备角标 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -466,7 +478,6 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.15);
             backdrop-filter: blur(2px);
-            pointer-events: none;
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
@@ -540,17 +551,15 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V20 · 图片修复</div>
+            <div class="header-subtitle">网页版本号：V17 · 最终修复版</div>
         </header>
 
         <div id="sortedContent"></div>
 
         <footer id="main-footer">
             <p>© 2025 ~ 2026 半生风血 本网站使用 CC-BY-NC-SA 4.0 开源协议。</p>
-            <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
-            <p style="margin-top:0.5rem;">想要将自己的作品展示在榜上的可以主动联系我。</p>
+            <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。</p>
             <p style="margin-top:0.5rem;">我的邮箱：windblood@foxmail.com</p>
-            <p style="margin-top:0.5rem;">或加入 QQ 群：https://qm.qq.com/q/t6xb5enGGA</p>
         </footer>
     </div>
 
@@ -583,10 +592,15 @@
                 adjustHeaderSpacing();
             }, 100);
 
-            // 图片加载处理函数 - 简化版
-            function setupImageLoading(imageContainer, img, placeholder, card) {
+            // 图片加载处理函数 - 终极修复版
+            function setupImageLoading(imageContainer, img, placeholder) {
+                // 确保容器有默认比例
+                imageContainer.style.aspectRatio = '16/9';
+                
                 // 图片加载成功
                 img.onload = function() {
+                    console.log('图片加载成功:', img.src);
+                    
                     // 获取图片原始尺寸
                     const naturalHeight = img.naturalHeight;
                     const naturalWidth = img.naturalWidth;
@@ -596,29 +610,28 @@
                         const containerWidth = imageContainer.offsetWidth;
                         const aspectRatio = naturalHeight / naturalWidth;
                         const targetHeight = containerWidth * aspectRatio;
+                        
                         imageContainer.style.height = targetHeight + 'px';
+                        imageContainer.style.aspectRatio = 'unset'; // 移除默认比例
                     }
                     
                     // 标记图片已加载
                     img.classList.add('loaded');
                     
                     // 隐藏占位符
-                    setTimeout(() => {
-                        placeholder.classList.add('hidden');
-                    }, 300);
+                    placeholder.classList.add('hidden');
                 };
                 
                 // 图片加载失败
                 img.onerror = function() {
                     console.warn('图片加载失败:', img.src);
                     placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
-                    setTimeout(() => {
-                        placeholder.classList.add('hidden');
-                    }, 300);
+                    placeholder.classList.remove('hidden');
                 };
                 
                 // 如果图片已经缓存加载完成
                 if (img.complete) {
+                    console.log('图片已缓存:', img.src);
                     img.onload();
                 }
             }
@@ -643,7 +656,7 @@
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
                         
-                        // 图片部分 - 完全重写
+                        // 图片部分 - 终极修复版
                         if (cardData.image) {
                             const imageContainer = document.createElement('div');
                             imageContainer.className = 'image-container';
@@ -668,7 +681,7 @@
                             relativeContainer.appendChild(imageContainer);
                             
                             // 设置图片加载处理
-                            setupImageLoading(imageContainer, img, placeholder, card);
+                            setupImageLoading(imageContainer, img, placeholder);
                         }
                         
                         // 内容部分
@@ -721,7 +734,7 @@
                         relativeContainer.appendChild(contentDiv);
                         card.appendChild(relativeContainer);
                         
-                        // 添加等级徽章
+                        // 添加等级徽章 - 确保颜色正确
                         const badge = document.createElement('div');
                         badge.className = 'tier-badge';
                         badge.setAttribute('data-tier', cardData.tier);
