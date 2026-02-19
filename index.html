@@ -8,13 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>history.scrollRestoration='manual';</script>
     <style>
-        /* ----- 基础重置 & 设计令牌 ----- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body, html {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background: #121212;
@@ -27,7 +25,6 @@
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
         }
-
         html, body {
             overflow-y: scroll !important;
             height: auto !important;
@@ -36,7 +33,6 @@
             overscroll-behavior: auto !important;
             position: relative !important;
         }
-
         .background-decoration {
             position: fixed;
             top: 0; left: 0;
@@ -46,7 +42,6 @@
             opacity: 0.05;
             background: #121212;
         }
-
         .container {
             width: 100%;
             max-width: 1200px;
@@ -56,8 +51,6 @@
             z-index: 2;
             pointer-events: auto;
         }
-
-        /* ===== 始终悬浮的玻璃菜单 ===== */
         .float-command-center {
             position: fixed;
             top: 20px;
@@ -73,7 +66,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.75rem 1rem;
-            padding: 0.6rem 2rem 0.6rem 1.5rem;
+            padding: 0.6rem 0.6rem 0.6rem 1.4rem;
             background: rgba(20, 20, 25, 0.85);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -83,12 +76,10 @@
             transition: box-shadow 0.2s, background 0.2s;
             pointer-events: auto;
         }
-        
         .float-command-center:hover {
             box-shadow: 0 20px 40px -8px rgba(255,134,72,0.4), 0 0 0 1.5px #ff8648;
             background: rgba(25, 25, 30, 0.95);
         }
-
         .tier-jump-group {
             display: flex;
             flex-wrap: wrap;
@@ -96,7 +87,6 @@
             justify-content: center;
             flex: 0 1 auto;
         }
-
         .tier-jump {
             padding: 0.3rem 1rem;
             border-radius: 30px;
@@ -128,12 +118,10 @@
         .tier-jump[data-tier="C"] { border-left: 3px solid #34c759; }
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
-
-        /* ===== 搜索区域 ===== */
         .search-mini {
             display: flex;
             align-items: center;
-            background: rgba(30,30,35,0.7);
+            background: rgba(30,30,35,0.6);
             border-radius: 40px;
             padding: 0;
             border: 1px solid #3a3a44;
@@ -148,17 +136,17 @@
         .search-mini:focus-within {
             border-color: #ff8648;
             background: rgba(40,40,45,0.8);
+            box-shadow: 0 20px 40px -8px rgba(255,134,72,0.4), 0 0 0 1.5px #ff8648;
         }
-        
         .search-mini:hover {
             border-color: #ff8648;
             background: rgba(40,40,45,0.8);
+            box-shadow: 0 20px 40px -8px rgba(255,134,72,0.4), 0 0 0 1.5px #ff8648;
         }
-        
         @media (max-width: 500px) {
             .float-command-center {
                 min-width: 280px;
-                padding: 0.5rem 1.5rem 0.5rem 1rem;
+                padding: 0.5rem 1.5rem;
             }
             .search-mini {
                 min-width: 150px;
@@ -170,11 +158,10 @@
                 min-width: 32px;
             }
         }
-        
         @media (max-width: 380px) {
             .float-command-center {
                 min-width: 240px;
-                padding: 0.4rem 1.2rem 0.4rem 0.8rem;
+                padding: 0.4rem 1.2rem;
             }
             .search-mini {
                 min-width: 130px;
@@ -191,7 +178,6 @@
                 font-size: 1rem;
             }
         }
-        
         .search-mini i {
             color: #9ca3af;
             font-size: 0.9rem;
@@ -200,12 +186,10 @@
             flex-shrink: 0;
             transition: color 0.2s;
         }
-        
         .search-mini:focus-within i,
         .search-mini:hover i {
             color: #ff8648;
         }
-        
         #float-search {
             background: transparent;
             border: none;
@@ -225,12 +209,10 @@
             text-overflow: ellipsis;
             transition: color 0.2s;
         }
-        
         .search-mini:focus-within #float-search::placeholder,
         .search-mini:hover #float-search::placeholder {
             color: #9ca3af;
         }
-        
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -263,12 +245,9 @@
         #float-clear:active {
             transform: scale(0.9);
         }
-
-        /* 头部 */
         .header-spacer {
             width: 100%;
         }
-
         .header-title {
             font-size: clamp(2rem,5vw,3.5rem);
             font-weight: bold;
@@ -282,10 +261,8 @@
             color: #9ca3af;
             text-align: center;
         }
-
         .tier-group { 
             margin-bottom: 2rem; 
-            transition: all 0.4s ease; 
         }
         .tier-group-title {
             margin: 2rem 0 1rem;
@@ -295,10 +272,16 @@
             font-weight: bold;
             display: inline-block;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            cursor: default;
         }
         .tier-group-title:hover {
-            transform: translateX(5px);
+            transform: translateY(-2px);
             filter: brightness(1.2);
+            box-shadow: 0 8px 14px rgba(0,0,0,0.5);
+        }
+        .tier-group-title:active {
+            transform: scale(0.95);
         }
         .tier-group-title.S { background: rgba(255,58,58,0.2); color:#ff3a3a; border-left:4px solid #ff3a3a; }
         .tier-group-title.A { background: rgba(255,149,0,0.2); color:#ff9500; border-left:4px solid #ff9500; }
@@ -306,7 +289,6 @@
         .tier-group-title.C { background: rgba(52,199,89,0.2); color:#34c759; border-left:4px solid #34c759; }
         .tier-group-title.D { background: rgba(0,122,255,0.2); color:#007aff; border-left:4px solid #007aff; }
         .tier-group-title.unknown { background: rgba(255,255,255,0.1); color:#fff; border-left:4px solid #fff; }
-
         .card-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -315,7 +297,6 @@
         @media (min-width:640px) { .card-grid { grid-template-columns:repeat(2,1fr); } }
         @media (min-width:1024px) { .card-grid { grid-template-columns:repeat(3,1fr); } }
         @media (min-width:1280px) { .card-grid { grid-template-columns:repeat(4,1fr); } }
-
         .tier-card {
             background:#1e1e1e;
             border-radius:0.75rem;
@@ -325,27 +306,40 @@
             min-height:250px;
             display:flex;
             flex-direction:column;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease !important;
+            will-change: transform, box-shadow;
         }
         .tier-card:hover {
-            transform:scale(1.03);
-            box-shadow:0 16px 24px -6px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.5);
-            background:#2d2d2d;
+            transform: translateY(-7px) !important;
+            background: #2d2d2d;
+            box-shadow: 0 16px 24px -6px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.5);
         }
-
+        .tier-card:active {
+            transform: scale(0.95) !important;
+        }
+        .tier-card:hover .card-title {
+            color: #ff8648;
+        }
+        .tier-card:hover .card-description {
+            color: #d1d5db;
+        }
+        .tier-card:hover .card-footer-text {
+            color: #9ca3af;
+        }
+        .tier-card:hover .fa-chevron-down {
+            color: #9ca3af;
+        }
         .image-container {
             position: relative;
             width: 100%;
             background: #1e1e1e;
             overflow: hidden;
         }
-        
         .image-container::before {
             content: "";
             display: block;
             padding-top: 56.25%;
         }
-        
         .card-image {
             position: absolute;
             top: 0;
@@ -357,11 +351,9 @@
             transition: opacity 0.5s ease;
             z-index: 1;
         }
-        
         .card-image.loaded {
             opacity: 1;
         }
-        
         .image-placeholder {
             position: absolute;
             top: 0;
@@ -375,12 +367,10 @@
             transition: opacity 0.5s ease;
             z-index: 2;
         }
-        
         .image-placeholder.hidden {
             opacity: 0;
             pointer-events: none;
         }
-        
         .loading-spinner {
             width: 40px;
             height: 40px;
@@ -392,7 +382,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
         .card-content { 
             padding: 1.25rem; 
             padding-top: 2rem; 
@@ -408,18 +397,11 @@
             word-wrap: break-word; 
             transition: color 0.2s;
         }
-        .tier-card:hover .card-title {
-            color: #ff8648;
-        }
         .card-description { 
             color: #9ca3af; 
             margin-bottom: 1rem; 
             transition: color 0.2s;
         }
-        .tier-card:hover .card-description {
-            color: #d1d5db;
-        }
-        
         .card-footer { 
             display: flex; 
             justify-content: space-between; 
@@ -437,17 +419,11 @@
             position: absolute;
             left: 0;
         }
-        .tier-card:hover .card-footer-text {
-            color: #9ca3af;
-        }
         .fa-chevron-down {
             color: #6b7280;
             transition: transform 0.3s ease, color 0.2s;
             position: absolute;
             right: 0;
-        }
-        .tier-card:hover .fa-chevron-down {
-            color: #9ca3af;
         }
         .rotate-180 {
             transform: rotate(180deg);
@@ -457,7 +433,6 @@
             transform: translateY(10px);
             pointer-events: none;
         }
-
         .card-details { 
             margin-top: 1rem; 
             overflow: hidden; 
@@ -479,8 +454,6 @@
             color: #d1d5db; 
             margin-bottom: 1rem; 
         }
-
-        /* 角标 - 无动画 */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -493,7 +466,7 @@
             font-size: 0.8rem;
             letter-spacing: 0.3px;
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.4);
             backdrop-filter: blur(2px);
         }
         .tier-badge[data-tier^="S"] { background: #ff3a3a; }
@@ -505,7 +478,6 @@
             background: rgba(255,255,255,0.9);
             color: #121212;
         }
-
         .device-badge {
             position: absolute;
             top: 52px;
@@ -520,66 +492,67 @@
             align-items: center;
             gap: 0.3rem;
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
             backdrop-filter: blur(2px);
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
-
-        .animate-on-scroll {
+        
+        /* 动画类 */
+        body:not(.search-mode) .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        .animate-visible {
+        body:not(.search-mode) .animate-visible {
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* ===== 搜索动画 - 修复消失问题 ===== */
-        .tier-card {
-            transition: opacity 0.3s ease, transform 0.3s ease !important;
-            will-change: opacity, transform;
-        }
         
-        .tier-card.search-exit {
+        /* 卡片退出动画 */
+        .tier-card.search-exit,
+        .tier-group.search-exit {
             opacity: 0 !important;
             transform: translateY(20px) !important;
             pointer-events: none !important;
+            transition: opacity 0.3s ease, transform 0.3s ease !important;
         }
         
-        .tier-card.search-enter {
+        /* 卡片进入动画 */
+        .tier-card.search-enter,
+        .tier-group.search-enter {
             opacity: 0;
             transform: translateY(20px);
         }
-        
-        .tier-card.search-enter-active {
+        .tier-card.search-enter-active,
+        .tier-group.search-enter-active {
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease !important;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-
-        /* 确保隐藏的卡片完全不占位且不可见 */
-        .tier-card[style*="display: none"] {
-            display: none !important;
-        }
-
-        /* ===== Footer动画 ===== */
+        
+        /* 页脚动画 - 修复版：初始不透明度为1，退出动画正常 */
         footer {
             margin-top: 4rem;
             text-align: center;
             color: #6b7280;
             font-size: 0.875rem;
+            /* 初始直接可见，无透明度变换 */
+            opacity: 1;
+            transform: translateY(0);
             transition: opacity 0.4s ease, transform 0.4s ease;
-            opacity: 0;
-            transform: translateY(10px);
+            will-change: opacity, transform;
         }
         
+        /* 页脚退出动画 */
         footer.footer-exit {
-            opacity: 0;
-            transform: translateY(10px);
+            opacity: 0 !important;
+            transform: translateY(10px) !important;
+            transition: opacity 0.3s ease, transform 0.3s ease !important;
+            pointer-events: none !important;
         }
         
+        /* 页脚进入动画 (用于搜索后重新出现) */
         footer.footer-enter {
             opacity: 0;
             transform: translateY(10px);
@@ -588,10 +561,17 @@
         footer.footer-enter-active {
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
         
+        /* 页脚可见状态（默认已经可见，无需额外class）*/
         footer.footer-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 保证普通状态不透明 */
+        footer:not(.footer-exit):not(.footer-enter):not(.footer-enter-active) {
             opacity: 1;
             transform: translateY(0);
         }
@@ -609,7 +589,6 @@
             <button class="tier-jump" data-tier="D">D</button>
             <button class="tier-jump" data-tier="unknown">X</button>
         </div>
-
         <div class="search-mini">
             <i class="fa fa-search"></i>
             <input type="text" id="float-search" placeholder="搜索作品名称..." autocomplete="off">
@@ -618,19 +597,20 @@
     </div>
 
     <div class="container">
-            <header class="animate-on-scroll" data-animate style="text-align:center;">
+        <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V20 · 修复所有发现的问题</div>
+            <div class="header-subtitle">网页版本号：V21 - 修复搜索动画和滚动问题，优化动效</div>
             <p style="color:#9ca3af; margin-top:1rem; font-size:1.125rem;">欢迎来到本站！本站是一个给使用 Scratch 及其衍生软件制作的伪系统排行的网站。你可以在这里看到站长对各个作品的评价。</p>
-            <p style="color:#9ca3af; margin-top:1rem; margin-buttom:1rem; font-size:1.125rem;">如果你想的话，也可以把你自己的作品投稿上来。</p>
+            <p style="color:#9ca3af; margin-top:1rem; margin-bottom:1rem; font-size:1.125rem;">如果你想的话，也可以把你自己的作品投稿上来。</p>
         </header>
 
         <div id="sortedContent"></div>
 
-        <footer id="main-footer">
+        <!-- 修改 footer 部分，添加初始的进入动画类 -->
+        <footer id="main-footer" class="footer-enter">
             <p>© 2025 ~ 2026 半生风血 本网页使用 CC-BY-NC-SA 4.0 开源协议。</p>
-            <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
+            <p style="margin-top:0.5rem;">本站中所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
             <p style="margin-top:0.5rem;">想要将自己的作品展示在榜上的可以主动联系我。</p>
             <p style="margin-top:0.5rem;">我的邮箱：windblood@foxmail.com</p>
             <p style="margin-top:0.5rem;">或加入 QQ 群：https://qm.qq.com/q/t6xb5enGGA</p>
@@ -639,119 +619,92 @@
 
     <script>
         (function() {
+            // 强制滚动模式
             document.documentElement.style.overflowY = 'scroll';
             document.body.style.overflowY = 'scroll';
-            
+
+            // 常量定义
             const tierOrder = ['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','X'];
+            const tierGroups = ['S','A','B','C','D','unknown'];
             
+            // 状态变量
             let masterCards = [];
             let currentSearchTerm = '';
-            let animationTimeout = null;
-            let isRendering = false; // 防止重复渲染
-
-            function adjustHeaderSpacing() {
-                const menu = document.querySelector('.float-command-center');
-                const spacer = document.getElementById('header-spacer');
-                if (!menu || !spacer) return;
-                
-                const menuHeight = menu.offsetHeight;
-                const spacing = menuHeight + 20;
-                spacer.style.height = spacing + 'px';
-            }
-
-            window.addEventListener('resize', adjustHeaderSpacing);
+            let animationTimer = null;
+            let isRendering = false;
             
-            setTimeout(() => {
-                adjustHeaderSpacing();
-            }, 100);
+            // DOM 元素
+            const container = document.getElementById('sortedContent');
+            const searchInput = document.getElementById('float-search');
+            const clearBtn = document.getElementById('float-clear');
+            const footer = document.getElementById('main-footer');
+            const spacer = document.getElementById('header-spacer');
+            const menu = document.querySelector('.float-command-center');
 
-            // 图片加载处理函数
+            // 辅助函数：调整顶部间距
+            function adjustHeaderSpacing() {
+                if (menu && spacer) {
+                    spacer.style.height = (menu.offsetHeight + 30) + 'px';
+                }
+            }
+            window.addEventListener('resize', adjustHeaderSpacing);
+            setTimeout(adjustHeaderSpacing, 100);
+
+            // 图片加载处理 (纯函数，不依赖外部)
             function setupImageLoading(imageContainer, img, placeholder) {
-                const container = imageContainer;
-                
-                img.onload = function() {
-                    console.log('图片加载成功:', img.src);
-                    
-                    const naturalHeight = img.naturalHeight;
-                    const naturalWidth = img.naturalWidth;
-                    
-                    if (naturalHeight && naturalWidth) {
-                        const aspectRatio = (naturalHeight / naturalWidth) * 100;
-                        
-                        const style = document.createElement('style');
+                const onLoad = () => {
+                    if (img.naturalHeight && img.naturalWidth) {
                         const className = 'aspect-' + Date.now() + Math.random().toString(36).substr(2, 9);
-                        container.classList.add(className);
-                        
-                        style.textContent = `
-                            .${className}::before {
-                                padding-top: ${aspectRatio}% !important;
-                            }
-                        `;
+                        imageContainer.classList.add(className);
+                        const style = document.createElement('style');
+                        style.textContent = `.${className}::before { padding-top: ${(img.naturalHeight / img.naturalWidth) * 100}% !important; }`;
                         document.head.appendChild(style);
                     }
-                    
                     img.classList.add('loaded');
                     placeholder.classList.add('hidden');
                 };
-                
-                img.onerror = function() {
-                    console.warn('图片加载失败:', img.src);
+                img.addEventListener('load', onLoad, { once: true });
+                img.addEventListener('error', () => {
                     placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
-                };
-                
-                if (img.complete) {
-                    img.onload();
-                }
+                }, { once: true });
+                if (img.complete) onLoad();
             }
 
-            // 从JSON加载卡片数据
-            async function buildMasterCards() {
-                if (masterCards.length > 0) return;
-                
+            // 加载卡片数据
+            async function loadCards() {
                 try {
                     const response = await fetch('cards.json?_=' + Date.now());
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     const data = await response.json();
+                    if (!data?.cards || !Array.isArray(data.cards)) throw new Error('Invalid data format');
                     
                     masterCards = data.cards.map(cardData => {
                         const card = document.createElement('div');
                         card.className = 'tier-card';
-                        card.setAttribute('data-tier', cardData.tier);
-                        if (cardData.kind) {
-                            card.setAttribute('data-kind', cardData.kind);
-                        }
-                        
+                        card.dataset.tier = cardData.tier;
+                        if (cardData.kind) card.dataset.kind = cardData.kind;
+
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
-                        
+
                         if (cardData.image) {
                             const imageContainer = document.createElement('div');
                             imageContainer.className = 'image-container';
-                            
                             const placeholder = document.createElement('div');
                             placeholder.className = 'image-placeholder';
-                            
-                            const spinner = document.createElement('div');
-                            spinner.className = 'loading-spinner';
-                            placeholder.appendChild(spinner);
-                            
+                            placeholder.innerHTML = '<div class="loading-spinner"></div>';
                             const img = document.createElement('img');
                             img.src = cardData.image;
                             img.alt = cardData.title;
                             img.className = 'card-image';
-                            
                             imageContainer.appendChild(placeholder);
                             imageContainer.appendChild(img);
                             relativeContainer.appendChild(imageContainer);
-                            
                             setupImageLoading(imageContainer, img, placeholder);
                         }
-                        
+
                         const contentDiv = document.createElement('div');
                         contentDiv.className = 'card-content';
-                        
                         contentDiv.innerHTML = `
                             <h3 class="card-title">${cardData.title}</h3>
                             <p class="card-description">${cardData.description}</p>
@@ -760,49 +713,38 @@
                                 <i class="fa fa-chevron-down"></i>
                             </div>
                         `;
-                        
+
                         const detailsDiv = document.createElement('div');
                         detailsDiv.className = 'card-details';
-                        
                         let detailsHtml = '<div class="card-details-content">';
                         detailsHtml += '<h4 class="details-title">该作品的作者</h4>';
-                        
                         if (cardData.authorLink) {
                             detailsHtml += `<p class="details-text"><a href="${cardData.authorLink}" class="author-link" target="_blank">${cardData.author}</a></p>`;
                         } else {
                             detailsHtml += `<p class="details-text">${cardData.author}</p>`;
                         }
-                        
-                        if (cardData.advantages && cardData.advantages.length) {
+                        if (cardData.advantages?.length) {
                             detailsHtml += '<h4 class="details-title">优点</h4><ul class="details-list">';
-                            cardData.advantages.forEach(adv => {
-                                detailsHtml += `<li>${adv}</li>`;
-                            });
+                            cardData.advantages.forEach(adv => { detailsHtml += `<li>${adv}</li>`; });
                             detailsHtml += '</ul>';
                         }
-                        
-                        if (cardData.disadvantages && cardData.disadvantages.length) {
+                        if (cardData.disadvantages?.length) {
                             detailsHtml += '<h4 class="details-title">缺点</h4><ul class="details-list">';
-                            cardData.disadvantages.forEach(dis => {
-                                detailsHtml += `<li>${dis}</li>`;
-                            });
+                            cardData.disadvantages.forEach(dis => { detailsHtml += `<li>${dis}</li>`; });
                             detailsHtml += '</ul>';
                         }
-                        
-                        detailsHtml += `<h4 class="details-title">总结</h4><p class="details-text">${cardData.summary}</p>`;
-                        detailsHtml += '</div>';
+                        detailsHtml += `<h4 class="details-title">总结</h4><p class="details-text">${cardData.summary}</p></div>`;
                         detailsDiv.innerHTML = detailsHtml;
-                        
                         contentDiv.appendChild(detailsDiv);
                         relativeContainer.appendChild(contentDiv);
                         card.appendChild(relativeContainer);
-                        
+
                         const badge = document.createElement('div');
                         badge.className = 'tier-badge';
-                        badge.setAttribute('data-tier', cardData.tier);
+                        badge.dataset.tier = cardData.tier;
                         badge.textContent = cardData.tier;
                         relativeContainer.appendChild(badge);
-                        
+
                         if (cardData.kind && (cardData.kind === 'mobile' || cardData.kind === 'pc')) {
                             const dev = document.createElement('div');
                             dev.className = `device-badge ${cardData.kind}`;
@@ -811,277 +753,229 @@
                                 '<i class="fa fa-laptop"></i><span>电脑端</span>';
                             relativeContainer.appendChild(dev);
                         }
-                        
                         return card;
                     });
                     
-                    // 数据加载完成后渲染
+                    // 初始渲染
                     renderWithAnimation('');
-                    
                 } catch (error) {
-                    console.error('加载卡片数据失败:', error);
-                    document.getElementById('sortedContent').innerHTML = `
+                    console.error('Failed to load cards:', error);
+                    container.innerHTML = `
                         <div style="text-align:center; padding:3rem; color:#ef4444;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
-                            <p style="margin-top:1rem;">加载卡片数据失败</p>
+                            <p style="margin-top:1rem;">加载卡片数据失败！</p>
+                            <p style="margin-top:0.5rem; color:#9ca3af; font-size:0.9rem;">${error.message}</p>
+                            <button onclick="location.reload()" style="margin-top:1rem; padding:0.5rem 2rem; background:#ff8648; border:none; border-radius:2rem; color:#121212; font-weight:bold; cursor:pointer;">重试</button>
                         </div>
                     `;
                 }
             }
 
-            function updateClearButtonVisibility() {
-                const clearBtn = document.getElementById('float-clear');
-                const searchInput = document.getElementById('float-search');
-                if (searchInput.value.length > 0) {
-                    clearBtn.classList.add('visible');
-                } else {
-                    clearBtn.classList.remove('visible');
-                }
+            // 更新清除按钮
+            function updateClearButton() {
+                clearBtn.classList.toggle('visible', searchInput.value.length > 0);
             }
 
-            function abortCurrentAnimation() {
-                if (animationTimeout) {
-                    clearTimeout(animationTimeout);
-                    animationTimeout = null;
-                }
-            }
-
-            function renderWithAnimation(searchTerm) {
-                // 防止重复渲染
-                if (isRendering) {
-                    console.log('正在渲染中，跳过...');
-                    return;
-                }
+            // 核心渲染函数 (优化合并逻辑) — 移除可能导致闪现的 scrollTo
+            function renderWithAnimation(term) {
+                // 设置搜索模式
+                document.body.classList.toggle('search-mode', !!term);
                 
-                abortCurrentAnimation();
-                
-                // 确保masterCards已加载
-                if (masterCards.length === 0) {
-                    console.log('masterCards为空，等待加载...');
-                    setTimeout(() => renderWithAnimation(searchTerm), 100);
+                // 如果正在渲染或卡片未加载，延迟重试
+                if (isRendering || masterCards.length === 0) {
+                    if (masterCards.length === 0) {
+                        setTimeout(() => renderWithAnimation(term), 100);
+                    }
                     return;
                 }
                 
                 isRendering = true;
-                currentSearchTerm = searchTerm;
-                const footer = document.getElementById('main-footer');
-                const term = searchTerm.toLowerCase().trim();
-                
-                const oldCards = document.querySelectorAll('.tier-card');
-                const oldGroups = document.querySelectorAll('.tier-group');
-                
-                // 添加footer退出动画
-                if (footer) {
-                    footer.classList.remove('footer-visible', 'footer-enter-active');
-                    footer.classList.add('footer-exit');
-                }
-                
-                if (oldCards.length > 0) {
-                    // 先添加退出动画类
+                if (animationTimer) clearTimeout(animationTimer);
+                currentSearchTerm = term;
+
+                // 页脚退出动画
+                footer.classList.remove('footer-visible', 'footer-enter', 'footer-enter-active');
+                footer.classList.add('footer-exit');
+
+                // 获取当前内容
+                const oldCards = document.querySelectorAll('.tier-card:not(.search-exit)');
+                const oldGroups = document.querySelectorAll('.tier-group:not(.search-exit)');
+
+                if (oldCards.length || oldGroups.length) {
+                    // 标记退出动画
                     oldCards.forEach(c => {
                         c.classList.add('search-exit');
                         c.style.pointerEvents = 'none';
                     });
-                    oldGroups.forEach(g => g.style.opacity = '0');
-                    
-                    // 等待退出动画完成后再渲染新内容
-                    animationTimeout = setTimeout(() => {
-                        // 完全移除旧卡片
-                        oldCards.forEach(c => {
-                            if (c.parentNode) {
-                                c.parentNode.removeChild(c);
-                            }
-                        });
-                        
+                    oldGroups.forEach(g => {
+                        g.classList.add('search-exit');
+                        g.style.pointerEvents = 'none';
+                    });
+
+                    animationTimer = setTimeout(() => {
+                        // 移除带退出标记的元素
+                        document.querySelectorAll('.tier-card.search-exit, .tier-group.search-exit').forEach(el => el.remove());
                         performRender(term);
-                        animationTimeout = null;
+                        // 移除滚动到顶部的代码，只保留平滑滚动行为 (由CSS smooth负责，或者不强制干预)
+                        // 如果希望保留滚动到顶部的行为，使用平滑滚动而不闪现
+                        // 这里改为平滑滚动到顶部，不闪现
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        animationTimer = null;
                         isRendering = false;
                     }, 300);
                 } else {
                     performRender(term);
+                    // 同样改为平滑滚动
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     isRendering = false;
                 }
             }
 
+            // 实际构建DOM
             function performRender(term) {
-                // 直接从masterCards克隆，确保数据完整
-                const allCards = masterCards.map(card => {
-                    const cloned = card.cloneNode(true);
-                    // 重新绑定图片加载事件
-                    const img = cloned.querySelector('img');
-                    const placeholder = cloned.querySelector('.image-placeholder');
-                    const imageContainer = cloned.querySelector('.image-container');
-                    if (img && placeholder && imageContainer) {
-                        setupImageLoading(imageContainer, img, placeholder);
-                    }
-                    return cloned;
-                });
+                const lowerTerm = term.toLowerCase().trim();
                 
-                const filteredCards = allCards.filter(card => {
-                    const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
-                    return term === '' || title.includes(term);
-                });
+                // 过滤 + 排序
+                const filtered = masterCards
+                    .map(card => {
+                        const clone = card.cloneNode(true);
+                        // 重新绑定图片加载
+                        const img = clone.querySelector('img');
+                        const placeholder = clone.querySelector('.image-placeholder');
+                        const imgContainer = clone.querySelector('.image-container');
+                        if (img && placeholder && imgContainer) {
+                            setupImageLoading(imgContainer, img, placeholder);
+                        }
+                        return clone;
+                    })
+                    .filter(card => {
+                        const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+                        return lowerTerm === '' || title.includes(lowerTerm);
+                    })
+                    .sort((a, b) => {
+                        const ta = a.dataset.tier || 'X';
+                        const tb = b.dataset.tier || 'X';
+                        return (tierOrder.indexOf(ta) || 999) - (tierOrder.indexOf(tb) || 999);
+                    });
 
-                filteredCards.sort((a, b) => {
-                    const tierA = a.getAttribute('data-tier') || 'X';
-                    const tierB = b.getAttribute('data-tier') || 'X';
-                    const idxA = tierOrder.indexOf(tierA);
-                    const idxB = tierOrder.indexOf(tierB);
-                    return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
-                });
-
+                // 分组
                 const groups = { S:[], A:[], B:[], C:[], D:[], unknown:[] };
-                filteredCards.forEach(c => {
-                    const t = c.getAttribute('data-tier');
-                    if (t === 'X') groups.unknown.push(c);
-                    else if (t.startsWith('S')) groups.S.push(c);
-                    else if (t.startsWith('A')) groups.A.push(c);
-                    else if (t.startsWith('B')) groups.B.push(c);
-                    else if (t.startsWith('C')) groups.C.push(c);
-                    else if (t.startsWith('D')) groups.D.push(c);
-                    else groups.unknown.push(c);
+                filtered.forEach(card => {
+                    const t = card.dataset.tier;
+                    if (t === 'X' || !t) groups.unknown.push(card);
+                    else if (t.startsWith('S')) groups.S.push(card);
+                    else if (t.startsWith('A')) groups.A.push(card);
+                    else if (t.startsWith('B')) groups.B.push(card);
+                    else if (t.startsWith('C')) groups.C.push(card);
+                    else if (t.startsWith('D')) groups.D.push(card);
+                    else groups.unknown.push(card);
                 });
 
-                const container = document.getElementById('sortedContent');
-                
-                // 清空容器（旧卡片已通过removeChild移除）
+                // 清空并填充
                 container.innerHTML = '';
-
-                ['S','A','B','C','D','unknown'].forEach(g => {
-                    if (groups[g].length) {
-                        const div = document.createElement('div');
-                        div.className = 'tier-group animate-on-scroll';
-                        div.setAttribute('data-animate', 'true');
-                        div.id = `tier-${g}`;
+                tierGroups.forEach(key => {
+                    const cards = groups[key];
+                    if (cards.length) {
+                        const groupDiv = document.createElement('div');
+                        groupDiv.className = 'tier-group animate-on-scroll search-enter';
+                        groupDiv.dataset.animate = 'true';
+                        groupDiv.id = `tier-${key}`;
+                        
                         const title = document.createElement('h3');
-                        title.className = `tier-group-title ${g}`;
-                        title.textContent = g === 'unknown' ? `未评价 (${groups[g].length}个)` : `${g}级别 (${groups[g].length}个)`;
+                        title.className = `tier-group-title ${key}`;
+                        title.textContent = key === 'unknown' ? `未评价 (${cards.length}个)` : `${key}级别 (${cards.length}个)`;
+                        
                         const grid = document.createElement('div');
                         grid.className = 'card-grid';
-                        
-                        groups[g].forEach(c => {
+                        cards.forEach(c => {
                             c.classList.add('search-enter');
                             grid.appendChild(c);
                         });
                         
-                        div.append(title, grid);
-                        container.appendChild(div);
+                        groupDiv.append(title, grid);
+                        container.appendChild(groupDiv);
                     }
                 });
 
-                // 使用requestAnimationFrame确保下一帧再添加入场动画
+                // 触发进入动画
                 requestAnimationFrame(() => {
-                    document.querySelectorAll('.tier-card').forEach(card => {
-                        card.classList.add('search-enter-active');
+                    document.querySelectorAll('.tier-card.search-enter, .tier-group.search-enter').forEach(el => {
+                        el.classList.add('search-enter-active');
                     });
-                    
-                    // footer入场动画
-                    const footer = document.getElementById('main-footer');
-                    if (footer) {
-                        footer.classList.remove('footer-exit', 'footer-visible');
-                        footer.classList.add('footer-enter');
-                        
-                        // 强制重绘
-                        void footer.offsetWidth;
-                        
-                        footer.classList.add('footer-enter-active');
-                        
-                        setTimeout(() => {
-                            footer.classList.remove('footer-enter', 'footer-enter-active');
-                            footer.classList.add('footer-visible');
-                        }, 500);
-                    }
                 });
 
-                bindCardEvents();
-                
-                setTimeout(() => {
-                    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                        if (el.getBoundingClientRect().top < window.innerHeight) {
-                            el.classList.add('animate-visible');
-                        }
-                    });
-                }, 100);
-                
-                updateClearButtonVisibility();
+                // 页脚动画
+                footer.classList.remove('footer-exit', 'footer-visible');
+                footer.classList.add('footer-enter');
+                requestAnimationFrame(() => {
+                    footer.classList.add('footer-enter-active');
+                    setTimeout(() => {
+                        footer.classList.remove('footer-enter', 'footer-enter-active');
+                        footer.classList.add('footer-visible');
+                    }, 500);
+                });
+
+                // 滚动观察器 (仅非搜索模式)
+                if (!document.body.classList.contains('search-mode')) {
+                    setTimeout(() => {
+                        const observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) entry.target.classList.add('animate-visible');
+                            });
+                        }, { threshold: 0.1 });
+                        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                            observer.observe(el);
+                            if (el.getBoundingClientRect().top < window.innerHeight + 100) el.classList.add('animate-visible');
+                        });
+                    }, 100);
+                }
+
+                updateClearButton();
             }
 
-            function bindCardEvents() {
-                document.querySelectorAll('.tier-card').forEach(card => {
-                    if (card.dataset.listen) return;
-                    card.dataset.listen = 'true';
-                    
-                    const icon = card.querySelector('.fa-chevron-down');
-                    const details = card.querySelector('.card-details');
-                    if (!details) return;
-                    
+            // 事件委托：卡片点击 (代替逐个绑定)
+            container.addEventListener('click', (e) => {
+                const card = e.target.closest('.tier-card');
+                if (!card) return;
+                
+                const details = card.querySelector('.card-details');
+                const icon = card.querySelector('.fa-chevron-down');
+                if (!details) return;
+                
+                const isOpen = details.style.maxHeight !== '0px' && details.style.maxHeight !== '';
+                
+                if (isOpen) {
                     details.style.maxHeight = '0px';
-                    details.style.overflow = 'hidden';
-                    
-                    card.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const isOpen = details.style.maxHeight !== '0px';
-                        if (isOpen) {
-                            details.style.maxHeight = '0px';
-                            details.style.overflowY = 'hidden';
-                            if (icon) icon.classList.remove('rotate-180');
-                            card.classList.remove('card-expanded');
-                        } else {
-                            const scrollHeight = details.scrollHeight;
-                            details.style.maxHeight = scrollHeight + 20 + 'px';
-                            setTimeout(() => details.style.overflowY = 'auto', 400);
-                            if (icon) icon.classList.add('rotate-180');
-                            card.classList.add('card-expanded');
-                        }
-                    });
-                });
-            }
+                    details.style.overflowY = 'hidden';
+                    icon?.classList.remove('rotate-180');
+                    card.classList.remove('card-expanded');
+                } else {
+                    details.style.maxHeight = details.scrollHeight + 20 + 'px';
+                    // 延迟启用滚动
+                    setTimeout(() => details.style.overflowY = 'auto', 400);
+                    icon?.classList.add('rotate-180');
+                    card.classList.add('card-expanded');
+                }
+            });
 
-            function initScrollAnimation() {
-                const observer = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('animate-visible');
-                        }
-                    });
-                }, { threshold: 0.1 });
-                
-                document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-            }
-
-            // 启动：加载JSON数据
-            buildMasterCards();
-            
-            setTimeout(() => {
-                initScrollAnimation();
-            }, 500);
-
-            const searchInput = document.getElementById('float-search');
-            const clearBtn = document.getElementById('float-clear');
-
-            updateClearButtonVisibility();
-
-            let searchTimeout;
-            
-            searchInput.addEventListener('input', function() {
-                const currentValue = this.value;
-                updateClearButtonVisibility();
-                
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    renderWithAnimation(currentValue);
-                }, 200);
+            // 搜索事件
+            let searchTimer;
+            searchInput.addEventListener('input', () => {
+                updateClearButton();
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(() => renderWithAnimation(searchInput.value), 200);
             });
 
             clearBtn.addEventListener('click', () => {
                 searchInput.value = '';
-                updateClearButtonVisibility();
+                updateClearButton();
                 renderWithAnimation('');
             });
 
+            // 跳转按钮
             document.querySelectorAll('.tier-jump').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const tier = btn.getAttribute('data-tier');
+                    const tier = btn.dataset.tier;
                     const target = document.getElementById(`tier-${tier}`);
                     if (target) {
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1091,6 +985,12 @@
                     }
                 });
             });
+
+            // 初始化清除按钮
+            updateClearButton();
+
+            // 启动数据加载
+            loadCards();
         })();
     </script>
 </body>
