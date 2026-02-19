@@ -52,7 +52,7 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 6rem 1rem 2rem;
+            padding: 0 1rem 2rem;
             position: relative;
             z-index: 2;
             pointer-events: auto;
@@ -125,26 +125,33 @@
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
 
-        /* 搜索区域 */
+        /* ===== 搜索区域 - 完全靠右且等距 ===== */
         .search-mini {
             display: flex;
             align-items: center;
             background: rgba(30,30,35,0.7);
             border-radius: 40px;
-            padding: 0.2rem 0.2rem 0.2rem 1rem;
+            padding: 0;  /* 移除所有内边距 */
             border: 1px solid #3a3a44;
             min-width: 210px;
             backdrop-filter: blur(4px);
             transition: border 0.2s;
+            height: 44px;  /* 固定高度，便于计算间距 */
         }
         .search-mini:focus-within {
             border-color: #ff8648;
         }
+        
+        /* 搜索图标容器 */
         .search-mini i {
             color: #9ca3af;
             font-size: 0.9rem;
-            margin-right: 6px;
+            margin-left: 16px;  /* 左侧固定间距 */
+            margin-right: 8px;
+            flex-shrink: 0;
         }
+        
+        /* 搜索输入框 */
         #float-search {
             background: transparent;
             border: none;
@@ -152,31 +159,36 @@
             color: white;
             font-size: 0.95rem;
             width: 120px;
-            padding: 0.5rem 0;
+            padding: 0;
+            flex: 1;  /* 占用剩余空间 */
+            min-width: 100px;
         }
         #float-search::placeholder {
             color: #6b7280;
             font-size: 0.9rem;
         }
+        
+        /* X按钮 - 完全靠右，上下间距相等 */
         #float-clear {
             background: #3a3a44;
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1;
-            width: 34px;
-            height: 34px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            margin-left: 6px;
+            margin: 8px 8px 8px 4px;  /* 上下8px，左右8px/4px */
+            flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease, background 0.2s;
+            transition: opacity 0.2s ease, visibility 0.2s ease, background 0.2s, width 0.2s;
         }
         #float-clear.visible {
             opacity: 1;
@@ -186,8 +198,15 @@
             background: #ff8648;
             color: #121212;
         }
+        #float-clear:active {
+            transform: scale(0.9);
+        }
 
-        /* 头部 */
+        /* 头部 - 添加一个占位容器用于JS计算间距 */
+        .header-spacer {
+            width: 100%;
+        }
+
         .header-title {
             font-size: clamp(2rem,5vw,3.5rem);
             font-weight: bold;
@@ -393,9 +412,11 @@
     </div>
 
     <div class="container">
+        <!-- 动态间距的标题区域 -->
         <header class="animate-on-scroll" data-animate style="text-align:center;">
+            <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V17</div>
+            <div class="header-subtitle">网页版本号：V18 · 优化部分内容</div>
         </header>
 
         <!-- 动态内容会插入到这里 -->
@@ -422,6 +443,50 @@
             // 主数据存储
             let masterCards = [];
             let currentSearchTerm = '';
+
+            // 动态调整顶部间距，防止菜单遮挡标题
+            function adjustHeaderSpacing() {
+                const menu = document.querySelector('.float-command-center');
+                const spacer = document.getElementById('header-spacer');
+                if (!menu || !spacer) return;
+                
+                // 获取菜单的实际高度（包括内外边距）
+                const menuHeight = menu.offsetHeight;
+                // 设置额外间距：菜单高度 + 20px 额外缓冲
+                const spacing = menuHeight + 20;
+                spacer.style.height = spacing + 'px';
+                
+                // 同时更新 container 的 padding-top 以保持一致性
+                const container = document.querySelector('.container');
+                if (container) {
+                    container.style.paddingTop = '0'; // 由spacer控制
+                }
+            }
+
+            // 监听菜单高度变化（例如窗口大小改变）
+            window.addEventListener('resize', () => {
+                adjustHeaderSpacing();
+            });
+
+            // 在菜单可能变化后调用（如字体加载、内容变化）
+            // 使用MutationObserver监听菜单属性变化
+            const menuObserver = new MutationObserver(() => {
+                adjustHeaderSpacing();
+            });
+            
+            // 等待菜单出现后开始观察
+            setTimeout(() => {
+                const menu = document.querySelector('.float-command-center');
+                if (menu) {
+                    menuObserver.observe(menu, { 
+                        attributes: true, 
+                        childList: true, 
+                        subtree: true,
+                        characterData: true 
+                    });
+                    adjustHeaderSpacing(); // 初始调用
+                }
+            }, 100);
 
             // 从JSON加载卡片数据
             async function buildMasterCards() {
@@ -534,11 +599,11 @@
                     renderWithAnimation('');
                     
                 } catch (error) {
-                    console.error('加载卡片数据失败:', error);
+                    console.error('加载数据失败！', error);
                     document.getElementById('sortedContent').innerHTML = `
                         <div style="text-align:center; padding:3rem; color:#ef4444;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
-                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确</p>
+                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。如果你是普通访问者，请把这个界面截图告知该网站的维护者。</p>
                             <p style="margin-top:0.5rem; color:#9ca3af; font-size:0.9rem;">${error.message}</p>
                         </div>
                     `;
