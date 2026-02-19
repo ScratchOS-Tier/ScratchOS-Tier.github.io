@@ -28,7 +28,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 滚动修复 */
         html, body {
             overflow-y: scroll !important;
             height: auto !important;
@@ -85,7 +84,6 @@
             pointer-events: auto;
         }
 
-        /* 等级跳转按钮组 */
         .tier-jump-group {
             display: flex;
             flex-wrap: wrap;
@@ -123,7 +121,7 @@
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
 
-        /* ===== 搜索区域 - 右边距20px ===== */
+        /* ===== 搜索区域 - 右边距精确20px ===== */
         .search-mini {
             display: flex;
             align-items: center;
@@ -143,7 +141,6 @@
             border-color: #ff8648;
         }
         
-        /* 窄屏适配 */
         @media (max-width: 500px) {
             .float-command-center {
                 min-width: 280px;
@@ -176,7 +173,7 @@
             #float-clear {
                 width: 24px;
                 height: 24px;
-                margin: 7px 20px 7px 2px; /* 右边距20px */
+                margin: 7px 0 7px 2px;
                 font-size: 1rem;
             }
         }
@@ -208,7 +205,7 @@
             text-overflow: ellipsis;
         }
         
-        /* X按钮 - 右边距20px，与上边距一致 */
+        /* X按钮 - 右边距0，由父容器的padding-right控制 */
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -223,7 +220,7 @@
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            margin: 8px 20px 8px 4px; /* 右边距20px */
+            margin: 8px 0 8px 4px; /* 右边距为0 */
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
@@ -298,30 +295,31 @@
             display:flex;
             flex-direction:column;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, opacity;
-        }
-        .tier-card:hover {
-            transform:scale(1.03);
-            box-shadow:0 16px 24px -6px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.5);
-            background:#2d2d2d;
         }
 
-        /* ===== 图片容器 - 终极修复版 ===== */
+        /* ===== 图片容器 - 完美比例 ===== */
         .image-container {
             position: relative;
             width: 100%;
             background: #1e1e1e;
             overflow: hidden;
-            min-height: 150px; /* 最小高度保证占位符显示 */
+        }
+        
+        .image-container::before {
+            content: "";
+            display: block;
+            padding-top: 56.25%; /* 16:9 默认比例，加载后会被JS覆盖 */
         }
         
         .card-image {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
-            display: block;
+            height: 100%;
+            object-fit: cover; /* 确保图片覆盖整个容器 */
             opacity: 0;
             transition: opacity 0.5s ease;
-            position: relative;
             z-index: 1;
         }
         
@@ -379,7 +377,6 @@
             margin-bottom: 1rem; 
         }
         
-        /* 卡片底部 */
         .card-footer { 
             display: flex; 
             justify-content: space-between; 
@@ -433,7 +430,7 @@
             margin-bottom: 1rem; 
         }
 
-        /* ===== 药丸角标 - 恢复颜色 ===== */
+        /* 药丸角标 */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -459,7 +456,6 @@
             color: #121212;
         }
 
-        /* 设备角标 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -527,8 +523,8 @@
 <body>
     <div class="background-decoration"></div>
 
-    <!-- 悬浮菜单 -->
-    <div class="float-command-center animate-on-scroll" data-animate>
+    <!-- 悬浮菜单 - 右边距20px -->
+    <div class="float-command-center animate-on-scroll" data-animate style="padding-right: 20px;">
         <div class="tier-jump-group">
             <button class="tier-jump" data-tier="S">S</button>
             <button class="tier-jump" data-tier="A">A</button>
@@ -549,7 +545,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V17 · 图片修复版</div>
+            <div class="header-subtitle">网页版本号：V17 · 完美比例</div>
         </header>
 
         <div id="sortedContent"></div>
@@ -563,7 +559,6 @@
 
     <script>
         (function() {
-            // 滚动修复
             document.documentElement.style.overflowY = 'scroll';
             document.body.style.overflowY = 'scroll';
             
@@ -573,7 +568,6 @@
             let currentSearchTerm = '';
             let animationTimeout = null;
 
-            // 动态调整顶部间距
             function adjustHeaderSpacing() {
                 const menu = document.querySelector('.float-command-center');
                 const spacer = document.getElementById('header-spacer');
@@ -590,8 +584,11 @@
                 adjustHeaderSpacing();
             }, 100);
 
-            // 图片加载处理函数 - 简化版
+            // 图片加载处理函数 - 完美比例版
             function setupImageLoading(imageContainer, img, placeholder) {
+                // 获取父容器引用
+                const container = imageContainer;
+                
                 // 图片加载成功
                 img.onload = function() {
                     console.log('图片加载成功:', img.src);
@@ -601,12 +598,20 @@
                     const naturalWidth = img.naturalWidth;
                     
                     if (naturalHeight && naturalWidth) {
-                        // 根据原始比例设置容器高度
-                        const containerWidth = imageContainer.offsetWidth;
-                        const aspectRatio = naturalHeight / naturalWidth;
-                        const targetHeight = containerWidth * aspectRatio;
+                        // 计算图片比例
+                        const aspectRatio = (naturalHeight / naturalWidth) * 100;
                         
-                        imageContainer.style.height = targetHeight + 'px';
+                        // 通过伪元素设置正确的比例
+                        const style = document.createElement('style');
+                        const className = 'aspect-' + Date.now() + Math.random().toString(36).substr(2, 9);
+                        container.classList.add(className);
+                        
+                        style.textContent = `
+                            .${className}::before {
+                                padding-top: ${aspectRatio}% !important;
+                            }
+                        `;
+                        document.head.appendChild(style);
                     }
                     
                     // 标记图片已加载
@@ -624,15 +629,12 @@
                 
                 // 如果图片已经缓存加载完成
                 if (img.complete) {
-                    console.log('图片已缓存:', img.src);
                     img.onload();
                 }
             }
 
-            // 从JSON加载卡片数据
             async function buildMasterCards() {
                 try {
-                    // 添加时间戳防止缓存
                     const response = await fetch('cards.json?_=' + Date.now());
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -650,7 +652,7 @@
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
                         
-                        // 图片部分 - 简化版
+                        // 图片部分 - 完美比例版
                         if (cardData.image) {
                             const imageContainer = document.createElement('div');
                             imageContainer.className = 'image-container';
@@ -691,7 +693,6 @@
                             </div>
                         `;
                         
-                        // 详情部分
                         const detailsDiv = document.createElement('div');
                         detailsDiv.className = 'card-details';
                         
@@ -728,14 +729,12 @@
                         relativeContainer.appendChild(contentDiv);
                         card.appendChild(relativeContainer);
                         
-                        // 添加等级徽章
                         const badge = document.createElement('div');
                         badge.className = 'tier-badge';
                         badge.setAttribute('data-tier', cardData.tier);
                         badge.textContent = cardData.tier;
                         relativeContainer.appendChild(badge);
                         
-                        // 添加设备角标
                         if (cardData.kind && (cardData.kind === 'mobile' || cardData.kind === 'pc')) {
                             const dev = document.createElement('div');
                             dev.className = `device-badge ${cardData.kind}`;
@@ -748,7 +747,6 @@
                         return card;
                     });
                     
-                    // 数据加载完成后渲染
                     renderWithAnimation('');
                     
                 } catch (error) {
@@ -890,14 +888,12 @@
                 updateClearButtonVisibility();
             }
 
-            // 绑定卡片点击事件
             function bindCardEvents() {
                 document.querySelectorAll('.tier-card').forEach(card => {
                     if (card.dataset.listen) return;
                     card.dataset.listen = 'true';
                     
                     const icon = card.querySelector('.fa-chevron-down');
-                    const footerText = card.querySelector('.card-footer-text');
                     const details = card.querySelector('.card-details');
                     if (!details) return;
                     
@@ -935,7 +931,6 @@
                 document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
             }
 
-            // 启动
             buildMasterCards();
             
             setTimeout(() => {
@@ -948,7 +943,6 @@
                 }
             }, 500);
 
-            // 搜索功能
             const searchInput = document.getElementById('float-search');
             const clearBtn = document.getElementById('float-clear');
 
@@ -971,7 +965,6 @@
                 }
             });
 
-            // 跳转
             document.querySelectorAll('.tier-jump').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tier = btn.getAttribute('data-tier');
