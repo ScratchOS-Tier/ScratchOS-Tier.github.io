@@ -480,7 +480,7 @@
             margin-bottom: 1rem; 
         }
 
-        /* ===== 角标 - 去掉悬停动画 ===== */
+        /* 角标 - 无动画 */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -495,7 +495,6 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(2px);
-            /* 移除所有transition和hover效果 */
         }
         .tier-badge[data-tier^="S"] { background: #ff3a3a; }
         .tier-badge[data-tier^="A"] { background: #ff9500; }
@@ -507,7 +506,6 @@
             color: #121212;
         }
 
-        /* 设备角标 - 也去掉悬停动画 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -524,7 +522,6 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.15);
             backdrop-filter: blur(2px);
-            /* 移除所有transition和hover效果 */
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
@@ -539,22 +536,32 @@
             transform: translateY(0);
         }
 
+        /* ===== 搜索动画 - 修复消失问题 ===== */
         .tier-card {
             transition: opacity 0.3s ease, transform 0.3s ease !important;
+            will-change: opacity, transform;
         }
+        
         .tier-card.search-exit {
             opacity: 0 !important;
             transform: translateY(20px) !important;
-            pointer-events: none;
+            pointer-events: none !important;
         }
+        
         .tier-card.search-enter {
             opacity: 0;
             transform: translateY(20px);
         }
+        
         .tier-card.search-enter-active {
             opacity: 1;
             transform: translateY(0);
             transition: opacity 0.5s ease, transform 0.5s ease !important;
+        }
+
+        /* 确保隐藏的卡片完全不占位且不可见 */
+        .tier-card[style*="display: none"] {
+            display: none !important;
         }
 
         /* ===== Footer动画 ===== */
@@ -588,11 +595,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
-        footer:hover p {
-            color: #9ca3af;
-            transition: color 0.2s;
-        }
     </style>
 </head>
 <body>
@@ -616,7 +618,7 @@
     </div>
 
     <div class="container">
-        <header class="animate-on-scroll" data-animate style="text-align:center;">
+            <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
             <div class="header-subtitle">网页版本号：V20 · 修复所有发现的问题</div>
@@ -645,6 +647,7 @@
             let masterCards = [];
             let currentSearchTerm = '';
             let animationTimeout = null;
+            let isRendering = false; // 防止重复渲染
 
             function adjustHeaderSpacing() {
                 const menu = document.querySelector('.float-command-center');
@@ -844,6 +847,12 @@
             }
 
             function renderWithAnimation(searchTerm) {
+                // 防止重复渲染
+                if (isRendering) {
+                    console.log('正在渲染中，跳过...');
+                    return;
+                }
+                
                 abortCurrentAnimation();
                 
                 // 确保masterCards已加载
@@ -853,6 +862,7 @@
                     return;
                 }
                 
+                isRendering = true;
                 currentSearchTerm = searchTerm;
                 const footer = document.getElementById('main-footer');
                 const term = searchTerm.toLowerCase().trim();
@@ -867,15 +877,29 @@
                 }
                 
                 if (oldCards.length > 0) {
-                    oldCards.forEach(c => c.classList.add('search-exit'));
+                    // 先添加退出动画类
+                    oldCards.forEach(c => {
+                        c.classList.add('search-exit');
+                        c.style.pointerEvents = 'none';
+                    });
                     oldGroups.forEach(g => g.style.opacity = '0');
                     
+                    // 等待退出动画完成后再渲染新内容
                     animationTimeout = setTimeout(() => {
+                        // 完全移除旧卡片
+                        oldCards.forEach(c => {
+                            if (c.parentNode) {
+                                c.parentNode.removeChild(c);
+                            }
+                        });
+                        
                         performRender(term);
                         animationTimeout = null;
+                        isRendering = false;
                     }, 300);
                 } else {
                     performRender(term);
+                    isRendering = false;
                 }
             }
 
@@ -919,6 +943,8 @@
                 });
 
                 const container = document.getElementById('sortedContent');
+                
+                // 清空容器（旧卡片已通过removeChild移除）
                 container.innerHTML = '';
 
                 ['S','A','B','C','D','unknown'].forEach(g => {
@@ -943,6 +969,7 @@
                     }
                 });
 
+                // 使用requestAnimationFrame确保下一帧再添加入场动画
                 requestAnimationFrame(() => {
                     document.querySelectorAll('.tier-card').forEach(card => {
                         card.classList.add('search-enter-active');
