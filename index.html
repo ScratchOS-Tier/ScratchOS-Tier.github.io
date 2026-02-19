@@ -198,7 +198,7 @@
         }
         .header-subtitle {
             font-size: clamp(1rem,2vw,1.3rem);
-            color: #ccc;
+            color: #9ca3af;
             text-align: center;
         }
 
@@ -284,6 +284,7 @@
             color: #121212;
         }
 
+        /* 设备角标 - 只有在有kind属性时才显示 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -386,28 +387,31 @@
 
         <div class="search-mini">
             <i class="fa fa-search"></i>
-            <input type="text" id="float-search" placeholder="搜作品..." autocomplete="off">
-            <button id="float-clear" title="清空搜索">×</button>
+            <input type="text" id="float-search" placeholder="搜索作品名称..." autocomplete="off">
+            <button id="float-clear" title="重置搜索">×</button>
         </div>
     </div>
 
     <div class="container">
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">版本：V17</div>
-            <p style="color:#9ca3af; font-size:0.95rem; margin-top:0.5rem;">数据从 cards.json 加载，修改后刷新即生效</p>
+            <div class="header-subtitle">JSON数据版 · 即时更新</div>
         </header>
 
         <!-- 动态内容会插入到这里 -->
         <div id="sortedContent">
             <div style="text-align:center; padding:3rem; color:#6b7280;">
                 <i class="fa fa-spinner fa-spin fa-2x"></i>
-                <p style="margin-top:1rem;">正在加载卡片数据...</p>
+                <p style="margin-top:1rem;">正在加载排行榜数据...</p>
             </div>
         </div>
 
         <footer id="main-footer">
-            <p>© 2025 ~ 2026 半生风血</p>
+            <p>© 2025 ~ 2026 半生风血 本网站使用 CC-BY-NC-SA 4.0 开源协议。</p>
+            <p style="margin-top:0.5rem;">所有 "SCOS"、"Scratch OS" 字样均指使用少儿编程语言 Scratch 及其衍生软件制作的伪系统。此类作品并非真正的操作系统，请勿将其和真正的操作系统比较或混淆。</p>
+            <p style="margin-top:0.5rem;">想要将自己的作品展示在榜上的可以主动联系我。</p>
+            <p style="margin-top:0.5rem;">我的邮箱：windblood@foxmail.com</p>
+            <p style="margin-top:0.5rem;">或加入 QQ 群：https://qm.qq.com/q/t6xb5enGGA</p>
         </footer>
     </div>
 
@@ -438,7 +442,10 @@
                         const card = document.createElement('div');
                         card.className = 'tier-card';
                         card.setAttribute('data-tier', cardData.tier);
-                        if (cardData.kind) card.setAttribute('data-kind', cardData.kind);
+                        // 只有在有kind属性时才设置data-kind
+                        if (cardData.kind) {
+                            card.setAttribute('data-kind', cardData.kind);
+                        }
                         
                         // 构建相对容器
                         const relativeContainer = document.createElement('div');
@@ -515,8 +522,8 @@
                         badge.textContent = cardData.tier;
                         relativeContainer.appendChild(badge);
                         
-                        // 添加设备角标
-                        if (cardData.kind) {
+                        // 添加设备角标 - 只有明确指定了kind才添加
+                        if (cardData.kind && (cardData.kind === 'mobile' || cardData.kind === 'pc')) {
                             const dev = document.createElement('div');
                             dev.className = `device-badge ${cardData.kind}`;
                             dev.innerHTML = cardData.kind === 'mobile' ? 
