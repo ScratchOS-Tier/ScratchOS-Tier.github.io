@@ -73,7 +73,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.75rem 1rem;
-            padding: 0.6rem 2rem 0.6rem 1.5rem; /* 右边距2rem提供足够空间 */
+            padding: 0.6rem 2rem 0.6rem 1.5rem;
             background: rgba(20, 20, 25, 0.85);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -89,7 +89,6 @@
             background: rgba(25, 25, 30, 0.95);
         }
 
-        /* 等级跳转按钮组 - 恢复悬停效果 */
         .tier-jump-group {
             display: flex;
             flex-wrap: wrap;
@@ -130,7 +129,7 @@
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
 
-        /* ===== 搜索区域 - 优化边距 ===== */
+        /* ===== 搜索区域 ===== */
         .search-mini {
             display: flex;
             align-items: center;
@@ -188,7 +187,7 @@
             #float-clear {
                 width: 24px;
                 height: 24px;
-                margin: 7px 4px 7px 2px;
+                margin: 7px 8px 7px 2px;
                 font-size: 1rem;
             }
         }
@@ -232,7 +231,6 @@
             color: #9ca3af;
         }
         
-        /* X按钮 - 合适的右边距 */
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -247,7 +245,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin: 8px 8px 8px 4px; /* 右边距8px，不会太靠右 */
+            margin: 8px 8px 8px 4px;
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
@@ -285,7 +283,6 @@
             text-align: center;
         }
 
-        /* 等级组样式 */
         .tier-group { 
             margin-bottom: 2rem; 
             transition: all 0.4s ease; 
@@ -310,7 +307,6 @@
         .tier-group-title.D { background: rgba(0,122,255,0.2); color:#007aff; border-left:4px solid #007aff; }
         .tier-group-title.unknown { background: rgba(255,255,255,0.1); color:#fff; border-left:4px solid #fff; }
 
-        /* 卡片网格 */
         .card-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -337,7 +333,6 @@
             background:#2d2d2d;
         }
 
-        /* 图片容器 */
         .image-container {
             position: relative;
             width: 100%;
@@ -484,14 +479,7 @@
             color: #d1d5db; 
             margin-bottom: 1rem; 
         }
-        .details-text a {
-            transition: color 0.2s;
-        }
-        .details-text a:hover {
-            color: #ff8648 !important;
-        }
 
-        /* 药丸角标 */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -546,7 +534,6 @@
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
 
-        /* 动画系统 */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -588,18 +575,11 @@
             opacity: 1;
             transform: translateY(0);
         }
-        footer p {
-            transition: color 0.2s;
-        }
-        footer:hover p {
-            color: #9ca3af;
-        }
     </style>
 </head>
 <body>
     <div class="background-decoration"></div>
 
-    <!-- 悬浮菜单 -->
     <div class="float-command-center animate-on-scroll" data-animate>
         <div class="tier-jump-group">
             <button class="tier-jump" data-tier="S">S</button>
@@ -621,7 +601,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V17 · 完美交互</div>
+            <div class="header-subtitle">网页版本号：V17 · 完美修复</div>
         </header>
 
         <div id="sortedContent"></div>
@@ -643,6 +623,7 @@
             let masterCards = [];
             let currentSearchTerm = '';
             let animationTimeout = null;
+            let isLoading = false; // 防止重复加载
 
             function adjustHeaderSpacing() {
                 const menu = document.querySelector('.float-command-center');
@@ -660,6 +641,7 @@
                 adjustHeaderSpacing();
             }, 100);
 
+            // 图片加载处理函数
             function setupImageLoading(imageContainer, img, placeholder) {
                 const container = imageContainer;
                 
@@ -698,7 +680,10 @@
                 }
             }
 
+            // 从JSON加载卡片数据
             async function buildMasterCards() {
+                if (masterCards.length > 0) return; // 如果已经加载过，直接返回
+                
                 try {
                     const response = await fetch('cards.json?_=' + Date.now());
                     if (!response.ok) {
@@ -839,6 +824,13 @@
             function renderWithAnimation(searchTerm) {
                 abortCurrentAnimation();
                 
+                // 确保masterCards已加载
+                if (masterCards.length === 0) {
+                    console.log('masterCards为空，等待加载...');
+                    setTimeout(() => renderWithAnimation(searchTerm), 100);
+                    return;
+                }
+                
                 currentSearchTerm = searchTerm;
                 const footer = document.getElementById('main-footer');
                 const term = searchTerm.toLowerCase().trim();
@@ -864,7 +856,18 @@
             }
 
             function performRender(term) {
-                const allCards = masterCards.map(card => card.cloneNode(true));
+                // 直接从masterCards克隆，确保数据完整
+                const allCards = masterCards.map(card => {
+                    const cloned = card.cloneNode(true);
+                    // 重新绑定图片加载事件
+                    const img = cloned.querySelector('img');
+                    const placeholder = cloned.querySelector('.image-placeholder');
+                    const imageContainer = cloned.querySelector('.image-container');
+                    if (img && placeholder && imageContainer) {
+                        setupImageLoading(imageContainer, img, placeholder);
+                    }
+                    return cloned;
+                });
                 
                 const filteredCards = allCards.filter(card => {
                     const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
@@ -990,6 +993,7 @@
                 document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
             }
 
+            // 启动：加载JSON数据
             buildMasterCards();
             
             setTimeout(() => {
@@ -1008,34 +1012,21 @@
             updateClearButtonVisibility();
 
             let searchTimeout;
-            let lastInputValue = '';
             
             searchInput.addEventListener('input', function() {
                 const currentValue = this.value;
                 updateClearButtonVisibility();
                 
-                // 修复手动退格清空问题
-                if (currentValue === '' && lastInputValue !== '') {
-                    // 手动退格清空，立即触发渲染
-                    clearTimeout(searchTimeout);
-                    renderWithAnimation('');
-                } else {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        renderWithAnimation(currentValue);
-                    }, 200);
-                }
-                
-                lastInputValue = currentValue;
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    renderWithAnimation(currentValue);
+                }, 200);
             });
 
             clearBtn.addEventListener('click', () => {
-                if (searchInput.value.length > 0) {
-                    searchInput.value = '';
-                    lastInputValue = '';
-                    updateClearButtonVisibility();
-                    renderWithAnimation('');
-                }
+                searchInput.value = '';
+                updateClearButtonVisibility();
+                renderWithAnimation('');
             });
 
             document.querySelectorAll('.tier-jump').forEach(btn => {
