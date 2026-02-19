@@ -67,6 +67,7 @@
             margin: 0 auto;
             width: fit-content;
             max-width: 90vw;
+            min-width: 320px; /* 确保在小屏上也有足够宽度 */
             z-index: 9999;
             display: flex;
             flex-wrap: wrap;
@@ -80,7 +81,7 @@
             border-radius: 60px;
             border: 1px solid rgba(255,134,72,0.3);
             box-shadow: 0 15px 35px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,134,72,0.3);
-            transition: box-shadow 0.2s, background 0.2s;
+            transition: box-shadow 0.2s, background 0.2s, min-width 0.3s ease;
             pointer-events: auto;
         }
         .float-command-center:hover {
@@ -94,6 +95,7 @@
             flex-wrap: wrap;
             gap: 0.3rem;
             justify-content: center;
+            flex: 0 1 auto;
         }
 
         .tier-jump {
@@ -125,7 +127,7 @@
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
 
-        /* ===== 搜索区域 - 完全靠右且等距 ===== */
+        /* ===== 搜索区域 - 动态宽度 ===== */
         .search-mini {
             display: flex;
             align-items: center;
@@ -133,13 +135,54 @@
             border-radius: 40px;
             padding: 0;
             border: 1px solid #3a3a44;
-            min-width: 210px;
+            min-width: 180px; /* 最小宽度 */
+            max-width: 300px; /* 最大宽度 */
+            width: auto;
+            flex: 1 1 auto; /* 允许伸缩 */
             backdrop-filter: blur(4px);
-            transition: border 0.2s;
+            transition: border 0.2s, min-width 0.3s ease, max-width 0.3s ease;
             height: 44px;
         }
         .search-mini:focus-within {
             border-color: #ff8648;
+        }
+        
+        /* 窄屏适配 */
+        @media (max-width: 500px) {
+            .float-command-center {
+                min-width: 280px;
+                padding: 0.5rem 1rem;
+            }
+            .search-mini {
+                min-width: 150px;
+                max-width: 220px;
+            }
+            .tier-jump {
+                padding: 0.2rem 0.6rem;
+                font-size: 0.8rem;
+                min-width: 32px;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .float-command-center {
+                min-width: 240px;
+                padding: 0.4rem 0.8rem;
+            }
+            .search-mini {
+                min-width: 130px;
+                max-width: 180px;
+                height: 38px;
+            }
+            #float-search {
+                font-size: 0.85rem;
+            }
+            #float-clear {
+                width: 24px;
+                height: 24px;
+                margin: 7px 8px 7px 2px;
+                font-size: 1rem;
+            }
         }
         
         .search-mini i {
@@ -156,16 +199,20 @@
             outline: none;
             color: white;
             font-size: 0.95rem;
-            width: 120px;
+            width: 100%; /* 占满剩余空间 */
             padding: 0;
             flex: 1;
-            min-width: 100px;
+            min-width: 60px; /* 极小宽度下的保护 */
         }
         #float-search::placeholder {
             color: #6b7280;
             font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
+        /* X按钮 - 完全靠右，上下间距相等 */
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -180,12 +227,12 @@
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            margin: 8px 8px 8px 4px;
+            margin: 8px 16px 8px 4px;  /* 右边距16px，等于上边距20px减去内边距的差值，视觉上相等 */
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease, background 0.2s, width 0.2s;
+            transition: opacity 0.2s ease, visibility 0.2s ease, background 0.2s;
         }
         #float-clear.visible {
             opacity: 1;
@@ -257,7 +304,8 @@
             min-height:250px;
             display:flex;
             flex-direction:column;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, transform 0.5s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
         }
         .tier-card:hover {
             transform:scale(1.03);
@@ -265,20 +313,25 @@
             background:#2d2d2d;
         }
 
-        /* ===== 图片容器 - 恢复原比例 ===== */
+        /* ===== 图片容器 - 修复图片显示 ===== */
         .image-container {
             position: relative;
             width: 100%;
             background: #1e1e1e;
             transition: height 0.5s ease;
             overflow: hidden;
+            aspect-ratio: 16/9; /* 默认比例，实际会被JS覆盖 */
         }
         .card-image {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover; /* 确保图片覆盖容器 */
             display: block;
             opacity: 0;
             transition: opacity 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
         .card-image.loaded {
             opacity: 1;
@@ -294,6 +347,7 @@
             justify-content: center;
             background: #1e1e1e;
             transition: opacity 0.5s ease;
+            z-index: 2;
         }
         .image-placeholder.hidden {
             opacity: 0;
@@ -329,16 +383,40 @@
             color: #9ca3af; 
             margin-bottom: 1rem; 
         }
+        
+        /* 卡片底部 - 带有文字动画 */
         .card-footer { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             margin-top: auto; 
+            position: relative;
+            height: 24px;
         }
         .card-footer-text { 
             font-size: 0.875rem; 
-            color: #6b7280; 
+            color: #6b7280;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 1;
+            transform: translateY(0);
+            position: absolute;
+            left: 0;
         }
+        .fa-chevron-down {
+            color: #6b7280;
+            transition: transform 0.3s ease;
+            position: absolute;
+            right: 0;
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+        .card-expanded .card-footer-text {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+
         .card-details { 
             margin-top: 1rem; 
             overflow: hidden; 
@@ -407,15 +485,7 @@
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
 
-        /* 箭头旋转动画 */
-        .fa-chevron-down {
-            transition: transform 0.3s ease;
-        }
-        .rotate-180 {
-            transform: rotate(180deg);
-        }
-
-        /* ===== 统一的淡入动画 ===== */
+        /* ===== 动画系统 ===== */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -427,11 +497,13 @@
         }
 
         /* 搜索动画 */
+        .tier-card {
+            transition: opacity 0.3s ease, transform 0.3s ease !important;
+        }
         .tier-card.search-exit {
             opacity: 0 !important;
             transform: translateY(20px) !important;
             pointer-events: none;
-            transition: opacity 0.3s ease, transform 0.3s ease !important;
         }
         .tier-card.search-enter {
             opacity: 0;
@@ -442,8 +514,11 @@
             transform: translateY(0);
             transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
+        .tier-card.search-immediate {
+            transition: none !important;
+        }
 
-        /* footer 动画 - 初始隐藏，通过JS控制入场 */
+        /* footer 动画 */
         footer {
             margin-top: 4rem;
             text-align: center;
@@ -457,7 +532,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* 保留原有的搜索动画类，但不冲突 */
         footer.footer-exit {
             opacity: 0;
             transform: translateY(10px);
@@ -499,7 +573,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V18 · 优化细节</div>
+            <div class="header-subtitle">网页版本号：V19 · 窄屏兼容性增强</div>
         </header>
 
         <!-- 动态内容会插入到这里 -->
@@ -526,6 +600,7 @@
             // 主数据存储
             let masterCards = [];
             let currentSearchTerm = '';
+            let animationTimeout = null;
 
             // 动态调整顶部间距
             function adjustHeaderSpacing() {
@@ -564,7 +639,7 @@
                 }
             }, 100);
 
-            // 图片加载处理函数
+            // 图片加载处理函数 - 修复图片显示
             function handleImageLoad(img, imageContainer, placeholder, card) {
                 img.classList.add('loaded');
                 
@@ -579,6 +654,7 @@
                     const targetHeight = containerWidth * aspectRatio;
                     
                     imageContainer.style.height = targetHeight + 'px';
+                    imageContainer.style.aspectRatio = 'unset'; // 移除默认比例
                 }
                 
                 setTimeout(() => {
@@ -615,7 +691,7 @@
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
                         
-                        // 图片部分 - 恢复原比例处理
+                        // 图片部分 - 修复图片显示
                         if (cardData.image) {
                             const imageContainer = document.createElement('div');
                             imageContainer.className = 'image-container';
@@ -725,7 +801,7 @@
                     document.getElementById('sortedContent').innerHTML = `
                         <div style="text-align:center; padding:3rem; color:#ef4444;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
-                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。如果你是普通访客，请尝试把这个页面截图发送给该网站的维护者。</p>
+                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。</p>
                             <p style="margin-top:0.5rem; color:#9ca3af; font-size:0.9rem;">${error.message}</p>
                         </div>
                     `;
@@ -742,7 +818,27 @@
                 }
             }
 
+            // 立即终止所有动画
+            function abortCurrentAnimation() {
+                if (animationTimeout) {
+                    clearTimeout(animationTimeout);
+                    animationTimeout = null;
+                }
+                
+                document.querySelectorAll('.tier-card').forEach(card => {
+                    card.classList.remove('search-exit', 'search-enter', 'search-enter-active');
+                    void card.offsetWidth;
+                });
+                
+                document.querySelectorAll('.tier-group').forEach(g => {
+                    g.style.opacity = '';
+                });
+            }
+
+            // 带动画的渲染
             function renderWithAnimation(searchTerm) {
+                abortCurrentAnimation();
+                
                 currentSearchTerm = searchTerm;
                 const container = document.getElementById('sortedContent');
                 const footer = document.getElementById('main-footer');
@@ -759,8 +855,9 @@
                     oldCards.forEach(c => c.classList.add('search-exit'));
                     oldGroups.forEach(g => g.style.opacity = '0');
                     
-                    setTimeout(() => {
+                    animationTimeout = setTimeout(() => {
                         performRender(term);
+                        animationTimeout = null;
                     }, 300);
                 } else {
                     performRender(term);
@@ -851,6 +948,7 @@
                 updateClearButtonVisibility();
             }
 
+            // 绑定卡片点击事件
             function bindCardEvents() {
                 document.querySelectorAll('.tier-card').forEach(card => {
                     if (card.dataset.listen) return;
@@ -872,19 +970,11 @@
                             details.style.overflowY = 'hidden';
                             if (icon) icon.classList.remove('rotate-180');
                             card.classList.remove('card-expanded');
-                            if (footerText) {
-                                footerText.style.opacity = '1';
-                                footerText.style.transform = 'translateY(0)';
-                            }
                         } else {
                             details.style.maxHeight = details.scrollHeight + 20 + 'px';
                             setTimeout(() => details.style.overflowY = 'auto', 400);
                             if (icon) icon.classList.add('rotate-180');
                             card.classList.add('card-expanded');
-                            if (footerText) {
-                                footerText.style.opacity = '0';
-                                footerText.style.transform = 'translateY(10px)';
-                            }
                         }
                     });
                 });
@@ -902,15 +992,13 @@
                 document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
             }
 
-            // 启动：加载JSON数据
+            // 启动
             buildMasterCards();
             
             setTimeout(() => {
                 initScrollAnimation();
-                // 确保footer也有入场动画
                 const footer = document.getElementById('main-footer');
                 if (footer) {
-                    // 先确保footer可见（如果还没有被渲染动画处理）
                     setTimeout(() => {
                         if (!footer.classList.contains('footer-visible') && 
                             !footer.classList.contains('footer-enter-active')) {
@@ -925,11 +1013,11 @@
 
             updateClearButtonVisibility();
 
-            let timeout;
+            let searchTimeout;
             searchInput.addEventListener('input', function() {
                 updateClearButtonVisibility();
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
                     renderWithAnimation(this.value);
                 }, 200);
             });
