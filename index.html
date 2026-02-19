@@ -562,18 +562,41 @@
             transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
 
+        /* ===== Footer动画 - 完整恢复 ===== */
         footer {
             margin-top: 4rem;
             text-align: center;
             color: #6b7280;
             font-size: 0.875rem;
+            transition: opacity 0.4s ease, transform 0.4s ease;
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transform: translateY(10px);
         }
+        
+        footer.footer-exit {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        footer.footer-enter {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        footer.footer-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
         footer.footer-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+        
+        footer:hover p {
+            color: #9ca3af;
+            transition: color 0.2s;
         }
     </style>
 </head>
@@ -601,7 +624,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V17 · 完美修复</div>
+            <div class="header-subtitle">网页版本号：V17 · 完整动画</div>
         </header>
 
         <div id="sortedContent"></div>
@@ -623,7 +646,6 @@
             let masterCards = [];
             let currentSearchTerm = '';
             let animationTimeout = null;
-            let isLoading = false; // 防止重复加载
 
             function adjustHeaderSpacing() {
                 const menu = document.querySelector('.float-command-center');
@@ -682,7 +704,7 @@
 
             // 从JSON加载卡片数据
             async function buildMasterCards() {
-                if (masterCards.length > 0) return; // 如果已经加载过，直接返回
+                if (masterCards.length > 0) return;
                 
                 try {
                     const response = await fetch('cards.json?_=' + Date.now());
@@ -791,6 +813,7 @@
                         return card;
                     });
                     
+                    // 数据加载完成后渲染
                     renderWithAnimation('');
                     
                 } catch (error) {
@@ -838,7 +861,9 @@
                 const oldCards = document.querySelectorAll('.tier-card');
                 const oldGroups = document.querySelectorAll('.tier-group');
                 
+                // 添加footer退出动画
                 if (footer) {
+                    footer.classList.remove('footer-visible', 'footer-enter-active');
                     footer.classList.add('footer-exit');
                 }
                 
@@ -924,15 +949,20 @@
                         card.classList.add('search-enter-active');
                     });
                     
+                    // footer入场动画
                     const footer = document.getElementById('main-footer');
                     if (footer) {
-                        footer.classList.remove('footer-exit');
+                        footer.classList.remove('footer-exit', 'footer-visible');
                         footer.classList.add('footer-enter');
+                        
+                        // 强制重绘
                         void footer.offsetWidth;
+                        
                         footer.classList.add('footer-enter-active');
                         
                         setTimeout(() => {
                             footer.classList.remove('footer-enter', 'footer-enter-active');
+                            footer.classList.add('footer-visible');
                         }, 500);
                     }
                 });
@@ -998,12 +1028,6 @@
             
             setTimeout(() => {
                 initScrollAnimation();
-                const footer = document.getElementById('main-footer');
-                if (footer) {
-                    setTimeout(() => {
-                        footer.classList.add('footer-visible');
-                    }, 1000);
-                }
             }, 500);
 
             const searchInput = document.getElementById('float-search');
