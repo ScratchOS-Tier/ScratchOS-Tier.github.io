@@ -131,27 +131,25 @@
             align-items: center;
             background: rgba(30,30,35,0.7);
             border-radius: 40px;
-            padding: 0;  /* 移除所有内边距 */
+            padding: 0;
             border: 1px solid #3a3a44;
             min-width: 210px;
             backdrop-filter: blur(4px);
             transition: border 0.2s;
-            height: 44px;  /* 固定高度，便于计算间距 */
+            height: 44px;
         }
         .search-mini:focus-within {
             border-color: #ff8648;
         }
         
-        /* 搜索图标容器 */
         .search-mini i {
             color: #9ca3af;
             font-size: 0.9rem;
-            margin-left: 16px;  /* 左侧固定间距 */
+            margin-left: 16px;
             margin-right: 8px;
             flex-shrink: 0;
         }
         
-        /* 搜索输入框 */
         #float-search {
             background: transparent;
             border: none;
@@ -160,7 +158,7 @@
             font-size: 0.95rem;
             width: 120px;
             padding: 0;
-            flex: 1;  /* 占用剩余空间 */
+            flex: 1;
             min-width: 100px;
         }
         #float-search::placeholder {
@@ -168,7 +166,6 @@
             font-size: 0.9rem;
         }
         
-        /* X按钮 - 完全靠右，上下间距相等 */
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -183,7 +180,7 @@
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            margin: 8px 8px 8px 4px;  /* 上下8px，左右8px/4px */
+            margin: 8px 8px 8px 4px;
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
@@ -202,7 +199,7 @@
             transform: scale(0.9);
         }
 
-        /* 头部 - 添加一个占位容器用于JS计算间距 */
+        /* 头部 */
         .header-spacer {
             width: 100%;
         }
@@ -267,15 +264,101 @@
             box-shadow:0 16px 24px -6px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.5);
             background:#2d2d2d;
         }
-        .card-content { padding:1.25rem; padding-top:2rem; display:flex; flex-direction:column; flex-grow:1; }
-        .card-title { font-size:1.25rem; font-weight:bold; margin-bottom:0.5rem; padding-right:60px; word-wrap:break-word; }
-        .card-description { color:#9ca3af; margin-bottom:1rem; }
-        .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; }
-        .card-footer-text { font-size:0.875rem; color:#6b7280; }
-        .card-details { margin-top:1rem; overflow:hidden; max-height:0; transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
-        .card-details-content { border-top:1px solid #374151; padding-top:1rem; }
-        .details-title { font-weight:bold; margin-bottom:0.5rem; }
-        .details-list { list-style:disc; padding-left:1.25rem; color:#d1d5db; margin-bottom:1rem; }
+
+        /* ===== 图片容器 - 恢复原比例 ===== */
+        .image-container {
+            position: relative;
+            width: 100%;
+            background: #1e1e1e;
+            transition: height 0.5s ease;
+            overflow: hidden;
+        }
+        .card-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .card-image.loaded {
+            opacity: 1;
+        }
+        .image-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            transition: opacity 0.5s ease;
+        }
+        .image-placeholder.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .card-content { 
+            padding: 1.25rem; 
+            padding-top: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            flex-grow: 1; 
+        }
+        .card-title { 
+            font-size: 1.25rem; 
+            font-weight: bold; 
+            margin-bottom: 0.5rem; 
+            padding-right: 60px; 
+            word-wrap: break-word; 
+        }
+        .card-description { 
+            color: #9ca3af; 
+            margin-bottom: 1rem; 
+        }
+        .card-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: auto; 
+        }
+        .card-footer-text { 
+            font-size: 0.875rem; 
+            color: #6b7280; 
+        }
+        .card-details { 
+            margin-top: 1rem; 
+            overflow: hidden; 
+            max-height: 0; 
+            transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); 
+        }
+        .card-details-content { 
+            border-top: 1px solid #374151; 
+            padding-top: 1rem; 
+        }
+        .details-title { 
+            font-weight: bold; 
+            margin-bottom: 0.5rem; 
+        }
+        .details-list { 
+            list-style: disc; 
+            padding-left: 1.25rem; 
+            color: #d1d5db; 
+            margin-bottom: 1rem; 
+        }
 
         /* ===== 药丸角标 ===== */
         .tier-badge {
@@ -303,7 +386,7 @@
             color: #121212;
         }
 
-        /* 设备角标 - 只有在有kind属性时才显示 */
+        /* 设备角标 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -323,13 +406,6 @@
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
-
-        .image-container { position:relative; width:100%; height:150px; overflow:hidden; background:#1e1e1e; transition:height 0.5s ease; }
-        .card-image { width:100%; height:100%; object-fit:cover; opacity:0; transform:scale(1.1); transition:opacity 0.5s ease, transform 0.8s cubic-bezier(0.4,0,0.2,1); }
-        .card-image.loaded { opacity:1; transform:scale(1); }
-        .image-placeholder { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#1e1e1e; transition:opacity 0.5s ease; }
-        .loading-spinner { width:40px; height:40px; border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
 
         /* 箭头旋转动画 */
         .fa-chevron-down {
@@ -367,14 +443,21 @@
             transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
 
-        /* footer 动画 */
+        /* footer 动画 - 初始隐藏，通过JS控制入场 */
         footer {
             margin-top: 4rem;
             text-align: center;
             color: #6b7280;
             font-size: 0.875rem;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
+        footer.footer-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* 保留原有的搜索动画类，但不冲突 */
         footer.footer-exit {
             opacity: 0;
             transform: translateY(10px);
@@ -416,7 +499,7 @@
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V18 · 优化部分内容</div>
+            <div class="header-subtitle">网页版本号：V18 · 优化细节</div>
         </header>
 
         <!-- 动态内容会插入到这里 -->
@@ -444,37 +527,30 @@
             let masterCards = [];
             let currentSearchTerm = '';
 
-            // 动态调整顶部间距，防止菜单遮挡标题
+            // 动态调整顶部间距
             function adjustHeaderSpacing() {
                 const menu = document.querySelector('.float-command-center');
                 const spacer = document.getElementById('header-spacer');
                 if (!menu || !spacer) return;
                 
-                // 获取菜单的实际高度（包括内外边距）
                 const menuHeight = menu.offsetHeight;
-                // 设置额外间距：菜单高度 + 20px 额外缓冲
                 const spacing = menuHeight + 20;
                 spacer.style.height = spacing + 'px';
                 
-                // 同时更新 container 的 padding-top 以保持一致性
                 const container = document.querySelector('.container');
                 if (container) {
-                    container.style.paddingTop = '0'; // 由spacer控制
+                    container.style.paddingTop = '0';
                 }
             }
 
-            // 监听菜单高度变化（例如窗口大小改变）
             window.addEventListener('resize', () => {
                 adjustHeaderSpacing();
             });
 
-            // 在菜单可能变化后调用（如字体加载、内容变化）
-            // 使用MutationObserver监听菜单属性变化
             const menuObserver = new MutationObserver(() => {
                 adjustHeaderSpacing();
             });
             
-            // 等待菜单出现后开始观察
             setTimeout(() => {
                 const menu = document.querySelector('.float-command-center');
                 if (menu) {
@@ -484,9 +560,40 @@
                         subtree: true,
                         characterData: true 
                     });
-                    adjustHeaderSpacing(); // 初始调用
+                    adjustHeaderSpacing();
                 }
             }, 100);
+
+            // 图片加载处理函数
+            function handleImageLoad(img, imageContainer, placeholder, card) {
+                img.classList.add('loaded');
+                
+                // 获取图片原始尺寸
+                const naturalHeight = img.naturalHeight;
+                const naturalWidth = img.naturalWidth;
+                
+                if (naturalHeight && naturalWidth) {
+                    // 根据原始比例计算容器高度
+                    const containerWidth = imageContainer.offsetWidth;
+                    const aspectRatio = naturalHeight / naturalWidth;
+                    const targetHeight = containerWidth * aspectRatio;
+                    
+                    imageContainer.style.height = targetHeight + 'px';
+                }
+                
+                setTimeout(() => {
+                    placeholder.classList.add('hidden');
+                    card.classList.remove('loading');
+                }, 500);
+            }
+
+            function handleImageError(placeholder, imageContainer, card) {
+                placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
+                setTimeout(() => {
+                    placeholder.classList.add('hidden');
+                    card.classList.remove('loading');
+                }, 300);
+            }
 
             // 从JSON加载卡片数据
             async function buildMasterCards() {
@@ -498,32 +605,54 @@
                     const data = await response.json();
                     
                     masterCards = data.cards.map(cardData => {
-                        // 创建卡片DOM
                         const card = document.createElement('div');
                         card.className = 'tier-card';
                         card.setAttribute('data-tier', cardData.tier);
-                        // 只有在有kind属性时才设置data-kind
                         if (cardData.kind) {
                             card.setAttribute('data-kind', cardData.kind);
                         }
                         
-                        // 构建相对容器
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
                         
-                        // 图片部分
+                        // 图片部分 - 恢复原比例处理
                         if (cardData.image) {
+                            const imageContainer = document.createElement('div');
+                            imageContainer.className = 'image-container';
+                            
+                            const placeholder = document.createElement('div');
+                            placeholder.className = 'image-placeholder';
+                            
+                            const spinner = document.createElement('div');
+                            spinner.className = 'loading-spinner';
+                            placeholder.appendChild(spinner);
+                            
                             const img = document.createElement('img');
                             img.src = cardData.image;
                             img.alt = cardData.title;
-                            relativeContainer.appendChild(img);
+                            img.className = 'card-image';
+                            
+                            imageContainer.appendChild(placeholder);
+                            imageContainer.appendChild(img);
+                            relativeContainer.appendChild(imageContainer);
+                            
+                            // 图片加载处理
+                            if (img.complete) {
+                                handleImageLoad(img, imageContainer, placeholder, card);
+                            } else {
+                                img.addEventListener('load', () => {
+                                    handleImageLoad(img, imageContainer, placeholder, card);
+                                });
+                                img.addEventListener('error', () => {
+                                    handleImageError(placeholder, imageContainer, card);
+                                });
+                            }
                         }
                         
                         // 内容部分
                         const contentDiv = document.createElement('div');
                         contentDiv.className = 'card-content';
                         
-                        // 标题和描述
                         contentDiv.innerHTML = `
                             <h3 class="card-title">${cardData.title}</h3>
                             <p class="card-description">${cardData.description}</p>
@@ -533,13 +662,11 @@
                             </div>
                         `;
                         
-                        // 详情部分
                         const detailsDiv = document.createElement('div');
                         detailsDiv.className = 'card-details';
                         
                         let detailsHtml = '<div class="card-details-content">';
                         
-                        // 作者
                         detailsHtml += '<h4 class="details-title">该作品的作者</h4>';
                         if (cardData.authorLink) {
                             detailsHtml += `<p class="details-text"><a href="${cardData.authorLink}" class="author-link" target="_blank">${cardData.author}</a></p>`;
@@ -547,7 +674,6 @@
                             detailsHtml += `<p class="details-text">${cardData.author}</p>`;
                         }
                         
-                        // 优点
                         if (cardData.advantages && cardData.advantages.length) {
                             detailsHtml += '<h4 class="details-title">优点</h4><ul class="details-list">';
                             cardData.advantages.forEach(adv => {
@@ -556,7 +682,6 @@
                             detailsHtml += '</ul>';
                         }
                         
-                        // 缺点
                         if (cardData.disadvantages && cardData.disadvantages.length) {
                             detailsHtml += '<h4 class="details-title">缺点</h4><ul class="details-list">';
                             cardData.disadvantages.forEach(dis => {
@@ -565,7 +690,6 @@
                             detailsHtml += '</ul>';
                         }
                         
-                        // 总结
                         detailsHtml += `<h4 class="details-title">总结</h4><p class="details-text">${cardData.summary}</p>`;
                         
                         detailsHtml += '</div>';
@@ -575,14 +699,12 @@
                         relativeContainer.appendChild(contentDiv);
                         card.appendChild(relativeContainer);
                         
-                        // 添加等级徽章
                         const badge = document.createElement('div');
                         badge.className = 'tier-badge';
                         badge.setAttribute('data-tier', cardData.tier);
                         badge.textContent = cardData.tier;
                         relativeContainer.appendChild(badge);
                         
-                        // 添加设备角标 - 只有明确指定了kind才添加
                         if (cardData.kind && (cardData.kind === 'mobile' || cardData.kind === 'pc')) {
                             const dev = document.createElement('div');
                             dev.className = `device-badge ${cardData.kind}`;
@@ -599,18 +721,17 @@
                     renderWithAnimation('');
                     
                 } catch (error) {
-                    console.error('加载数据失败！', error);
+                    console.error('加载卡片数据失败:', error);
                     document.getElementById('sortedContent').innerHTML = `
                         <div style="text-align:center; padding:3rem; color:#ef4444;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
-                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。如果你是普通访问者，请把这个界面截图告知该网站的维护者。</p>
+                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。如果你是普通访客，请尝试把这个页面截图发送给该网站的维护者。</p>
                             <p style="margin-top:0.5rem; color:#9ca3af; font-size:0.9rem;">${error.message}</p>
                         </div>
                     `;
                 }
             }
 
-            // 更新clear按钮可见性
             function updateClearButtonVisibility() {
                 const clearBtn = document.getElementById('float-clear');
                 const searchInput = document.getElementById('float-search');
@@ -621,7 +742,6 @@
                 }
             }
 
-            // 带动画的渲染
             function renderWithAnimation(searchTerm) {
                 currentSearchTerm = searchTerm;
                 const container = document.getElementById('sortedContent');
@@ -731,7 +851,6 @@
                 updateClearButtonVisibility();
             }
 
-            // 绑定卡片点击事件
             function bindCardEvents() {
                 document.querySelectorAll('.tier-card').forEach(card => {
                     if (card.dataset.listen) return;
@@ -768,25 +887,9 @@
                             }
                         }
                     });
-
-                    // 图片加载
-                    const img = card.querySelector('img');
-                    if (img) {
-                        let container = card.querySelector('.image-container');
-                        if (!container) {
-                            container = document.createElement('div');
-                            container.className = 'image-container';
-                            img.parentNode.insertBefore(container, img);
-                            container.appendChild(img);
-                        }
-                        img.classList.add('card-image');
-                        if (img.complete) img.classList.add('loaded');
-                        else img.addEventListener('load', () => img.classList.add('loaded'));
-                    }
                 });
             }
 
-            // 初入动画观察器
             function initScrollAnimation() {
                 const observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
@@ -804,9 +907,19 @@
             
             setTimeout(() => {
                 initScrollAnimation();
+                // 确保footer也有入场动画
+                const footer = document.getElementById('main-footer');
+                if (footer) {
+                    // 先确保footer可见（如果还没有被渲染动画处理）
+                    setTimeout(() => {
+                        if (!footer.classList.contains('footer-visible') && 
+                            !footer.classList.contains('footer-enter-active')) {
+                            footer.classList.add('footer-visible');
+                        }
+                    }, 1000);
+                }
             }, 500);
 
-            // 搜索功能
             const searchInput = document.getElementById('float-search');
             const clearBtn = document.getElementById('float-clear');
 
@@ -829,7 +942,6 @@
                 }
             });
 
-            // 跳转
             document.querySelectorAll('.tier-jump').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tier = btn.getAttribute('data-tier');
