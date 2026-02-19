@@ -58,7 +58,7 @@
             pointer-events: auto;
         }
 
-        /* ===== 始终悬浮的玻璃菜单 (绝对居中) ===== */
+        /* ===== 始终悬浮的玻璃菜单 ===== */
         .float-command-center {
             position: fixed;
             top: 20px;
@@ -67,7 +67,7 @@
             margin: 0 auto;
             width: fit-content;
             max-width: 90vw;
-            min-width: 320px; /* 确保在小屏上也有足够宽度 */
+            min-width: 320px;
             z-index: 9999;
             display: flex;
             flex-wrap: wrap;
@@ -81,15 +81,11 @@
             border-radius: 60px;
             border: 1px solid rgba(255,134,72,0.3);
             box-shadow: 0 15px 35px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,134,72,0.3);
-            transition: box-shadow 0.2s, background 0.2s, min-width 0.3s ease;
+            transition: box-shadow 0.2s, background 0.2s;
             pointer-events: auto;
         }
-        .float-command-center:hover {
-            box-shadow: 0 20px 40px -8px rgba(255,134,72,0.4), 0 0 0 1.5px #ff8648;
-            background: rgba(25, 25, 30, 0.95);
-        }
 
-        /* 等级跳转按钮组 (药丸) */
+        /* 等级跳转按钮组 */
         .tier-jump-group {
             display: flex;
             flex-wrap: wrap;
@@ -127,7 +123,7 @@
         .tier-jump[data-tier="D"] { border-left: 3px solid #007aff; }
         .tier-jump[data-tier="unknown"] { border-left: 3px solid #ffffff; }
 
-        /* ===== 搜索区域 - 动态宽度 ===== */
+        /* ===== 搜索区域 ===== */
         .search-mini {
             display: flex;
             align-items: center;
@@ -135,12 +131,12 @@
             border-radius: 40px;
             padding: 0;
             border: 1px solid #3a3a44;
-            min-width: 180px; /* 最小宽度 */
-            max-width: 300px; /* 最大宽度 */
+            min-width: 180px;
+            max-width: 300px;
             width: auto;
-            flex: 1 1 auto; /* 允许伸缩 */
+            flex: 1 1 auto;
             backdrop-filter: blur(4px);
-            transition: border 0.2s, min-width 0.3s ease, max-width 0.3s ease;
+            transition: border 0.2s;
             height: 44px;
         }
         .search-mini:focus-within {
@@ -180,7 +176,7 @@
             #float-clear {
                 width: 24px;
                 height: 24px;
-                margin: 7px 8px 7px 2px;
+                margin: 7px 16px 7px 2px;
                 font-size: 1rem;
             }
         }
@@ -199,10 +195,10 @@
             outline: none;
             color: white;
             font-size: 0.95rem;
-            width: 100%; /* 占满剩余空间 */
+            width: 100%;
             padding: 0;
             flex: 1;
-            min-width: 60px; /* 极小宽度下的保护 */
+            min-width: 60px;
         }
         #float-search::placeholder {
             color: #6b7280;
@@ -212,7 +208,6 @@
             text-overflow: ellipsis;
         }
         
-        /* X按钮 - 完全靠右，上下间距相等 */
         #float-clear {
             background: #3a3a44;
             border: none;
@@ -227,7 +222,7 @@
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            margin: 8px 16px 8px 4px;  /* 右边距16px，等于上边距20px减去内边距的差值，视觉上相等 */
+            margin: 8px 16px 8px 4px;
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             opacity: 0;
@@ -241,9 +236,6 @@
         #float-clear:hover {
             background: #ff8648;
             color: #121212;
-        }
-        #float-clear:active {
-            transform: scale(0.9);
         }
 
         /* 头部 */
@@ -313,29 +305,29 @@
             background:#2d2d2d;
         }
 
-        /* ===== 图片容器 - 修复图片显示 ===== */
+        /* ===== 图片容器 - 完全修复版 ===== */
         .image-container {
             position: relative;
             width: 100%;
             background: #1e1e1e;
-            transition: height 0.5s ease;
             overflow: hidden;
-            aspect-ratio: 16/9; /* 默认比例，实际会被JS覆盖 */
+            min-height: 150px; /* 确保有最小高度 */
         }
+        
         .card-image {
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* 确保图片覆盖容器 */
+            height: auto;
             display: block;
             opacity: 0;
             transition: opacity 0.5s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
+            z-index: 1;
         }
+        
         .card-image.loaded {
             opacity: 1;
         }
+        
         .image-placeholder {
             position: absolute;
             top: 0;
@@ -348,11 +340,13 @@
             background: #1e1e1e;
             transition: opacity 0.5s ease;
             z-index: 2;
-        }
-        .image-placeholder.hidden {
-            opacity: 0;
             pointer-events: none;
         }
+        
+        .image-placeholder.hidden {
+            opacity: 0;
+        }
+        
         .loading-spinner {
             width: 40px;
             height: 40px;
@@ -384,7 +378,7 @@
             margin-bottom: 1rem; 
         }
         
-        /* 卡片底部 - 带有文字动画 */
+        /* 卡片底部 */
         .card-footer { 
             display: flex; 
             justify-content: space-between; 
@@ -438,7 +432,7 @@
             margin-bottom: 1rem; 
         }
 
-        /* ===== 药丸角标 ===== */
+        /* 药丸角标 */
         .tier-badge {
             position: absolute;
             top: 12px;
@@ -446,25 +440,16 @@
             font-weight: 600;
             padding: 0.3rem 1rem;
             border-radius: 0.75rem;
-            z-index: 20;
+            z-index: 30;
             color: white;
             font-size: 0.8rem;
             letter-spacing: 0.3px;
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(2px);
-        }
-        .tier-badge[data-tier^="S"] { background: #ff3a3a; }
-        .tier-badge[data-tier^="A"] { background: #ff9500; }
-        .tier-badge[data-tier^="B"] { background: #ffcc00; color: #1e1e1e; }
-        .tier-badge[data-tier^="C"] { background: #34c759; }
-        .tier-badge[data-tier^="D"] { background: #007aff; }
-        .tier-badge:not([data-tier^="S"]):not([data-tier^="A"]):not([data-tier^="B"]):not([data-tier^="C"]):not([data-tier^="D"]) {
-            background: rgba(255,255,255,0.9);
-            color: #121212;
+            pointer-events: none;
         }
 
-        /* 设备角标 */
         .device-badge {
             position: absolute;
             top: 52px;
@@ -472,7 +457,7 @@
             font-weight: 600;
             padding: 0.2rem 1rem;
             border-radius: 0.75rem;
-            z-index: 20;
+            z-index: 30;
             color: white;
             font-size: 0.7rem;
             display: flex;
@@ -481,11 +466,12 @@
             box-shadow: 0 8px 16px -4px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.15);
             backdrop-filter: blur(2px);
+            pointer-events: none;
         }
         .device-badge.mobile { background: #22c55e; }
         .device-badge.pc { background: #3b82f6; }
 
-        /* ===== 动画系统 ===== */
+        /* 动画系统 */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -496,7 +482,6 @@
             transform: translateY(0);
         }
 
-        /* 搜索动画 */
         .tier-card {
             transition: opacity 0.3s ease, transform 0.3s ease !important;
         }
@@ -514,11 +499,7 @@
             transform: translateY(0);
             transition: opacity 0.5s ease, transform 0.5s ease !important;
         }
-        .tier-card.search-immediate {
-            transition: none !important;
-        }
 
-        /* footer 动画 */
         footer {
             margin-top: 4rem;
             text-align: center;
@@ -532,25 +513,12 @@
             opacity: 1;
             transform: translateY(0);
         }
-        footer.footer-exit {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        footer.footer-enter {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        footer.footer-enter-active {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
     </style>
 </head>
 <body>
     <div class="background-decoration"></div>
 
-    <!-- 始终悬浮的玻璃菜单 -->
+    <!-- 悬浮菜单 -->
     <div class="float-command-center animate-on-scroll" data-animate>
         <div class="tier-jump-group">
             <button class="tier-jump" data-tier="S">S</button>
@@ -569,14 +537,12 @@
     </div>
 
     <div class="container">
-        <!-- 动态间距的标题区域 -->
         <header class="animate-on-scroll" data-animate style="text-align:center;">
             <div class="header-spacer" id="header-spacer"></div>
             <h1 class="header-title">SCOS Tier 排行榜</h1>
-            <div class="header-subtitle">网页版本号：V19 · 窄屏兼容性增强</div>
+            <div class="header-subtitle">网页版本号：V20 · 图片修复</div>
         </header>
 
-        <!-- 动态内容会插入到这里 -->
         <div id="sortedContent"></div>
 
         <footer id="main-footer">
@@ -594,10 +560,8 @@
             document.documentElement.style.overflowY = 'scroll';
             document.body.style.overflowY = 'scroll';
             
-            // 等级顺序
             const tierOrder = ['S+','S','S-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','X'];
             
-            // 主数据存储
             let masterCards = [];
             let currentSearchTerm = '';
             let animationTimeout = null;
@@ -611,70 +575,58 @@
                 const menuHeight = menu.offsetHeight;
                 const spacing = menuHeight + 20;
                 spacer.style.height = spacing + 'px';
-                
-                const container = document.querySelector('.container');
-                if (container) {
-                    container.style.paddingTop = '0';
-                }
             }
 
-            window.addEventListener('resize', () => {
-                adjustHeaderSpacing();
-            });
-
-            const menuObserver = new MutationObserver(() => {
-                adjustHeaderSpacing();
-            });
+            window.addEventListener('resize', adjustHeaderSpacing);
             
             setTimeout(() => {
-                const menu = document.querySelector('.float-command-center');
-                if (menu) {
-                    menuObserver.observe(menu, { 
-                        attributes: true, 
-                        childList: true, 
-                        subtree: true,
-                        characterData: true 
-                    });
-                    adjustHeaderSpacing();
-                }
+                adjustHeaderSpacing();
             }, 100);
 
-            // 图片加载处理函数 - 修复图片显示
-            function handleImageLoad(img, imageContainer, placeholder, card) {
-                img.classList.add('loaded');
-                
-                // 获取图片原始尺寸
-                const naturalHeight = img.naturalHeight;
-                const naturalWidth = img.naturalWidth;
-                
-                if (naturalHeight && naturalWidth) {
-                    // 根据原始比例计算容器高度
-                    const containerWidth = imageContainer.offsetWidth;
-                    const aspectRatio = naturalHeight / naturalWidth;
-                    const targetHeight = containerWidth * aspectRatio;
+            // 图片加载处理函数 - 简化版
+            function setupImageLoading(imageContainer, img, placeholder, card) {
+                // 图片加载成功
+                img.onload = function() {
+                    // 获取图片原始尺寸
+                    const naturalHeight = img.naturalHeight;
+                    const naturalWidth = img.naturalWidth;
                     
-                    imageContainer.style.height = targetHeight + 'px';
-                    imageContainer.style.aspectRatio = 'unset'; // 移除默认比例
-                }
+                    if (naturalHeight && naturalWidth) {
+                        // 根据原始比例设置容器高度
+                        const containerWidth = imageContainer.offsetWidth;
+                        const aspectRatio = naturalHeight / naturalWidth;
+                        const targetHeight = containerWidth * aspectRatio;
+                        imageContainer.style.height = targetHeight + 'px';
+                    }
+                    
+                    // 标记图片已加载
+                    img.classList.add('loaded');
+                    
+                    // 隐藏占位符
+                    setTimeout(() => {
+                        placeholder.classList.add('hidden');
+                    }, 300);
+                };
                 
-                setTimeout(() => {
-                    placeholder.classList.add('hidden');
-                    card.classList.remove('loading');
-                }, 500);
-            }
-
-            function handleImageError(placeholder, imageContainer, card) {
-                placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
-                setTimeout(() => {
-                    placeholder.classList.add('hidden');
-                    card.classList.remove('loading');
-                }, 300);
+                // 图片加载失败
+                img.onerror = function() {
+                    console.warn('图片加载失败:', img.src);
+                    placeholder.innerHTML = '<i class="fa fa-image" style="font-size:2rem;color:#6b7280;"></i>';
+                    setTimeout(() => {
+                        placeholder.classList.add('hidden');
+                    }, 300);
+                };
+                
+                // 如果图片已经缓存加载完成
+                if (img.complete) {
+                    img.onload();
+                }
             }
 
             // 从JSON加载卡片数据
             async function buildMasterCards() {
                 try {
-                    const response = await fetch('cards.json');
+                    const response = await fetch('cards.json?_=' + Date.now()); // 防止缓存
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -691,11 +643,12 @@
                         const relativeContainer = document.createElement('div');
                         relativeContainer.style.position = 'relative';
                         
-                        // 图片部分 - 修复图片显示
+                        // 图片部分 - 完全重写
                         if (cardData.image) {
                             const imageContainer = document.createElement('div');
                             imageContainer.className = 'image-container';
                             
+                            // 创建占位符
                             const placeholder = document.createElement('div');
                             placeholder.className = 'image-placeholder';
                             
@@ -703,26 +656,19 @@
                             spinner.className = 'loading-spinner';
                             placeholder.appendChild(spinner);
                             
+                            // 创建图片
                             const img = document.createElement('img');
                             img.src = cardData.image;
                             img.alt = cardData.title;
                             img.className = 'card-image';
                             
+                            // 按顺序添加到容器
                             imageContainer.appendChild(placeholder);
                             imageContainer.appendChild(img);
                             relativeContainer.appendChild(imageContainer);
                             
-                            // 图片加载处理
-                            if (img.complete) {
-                                handleImageLoad(img, imageContainer, placeholder, card);
-                            } else {
-                                img.addEventListener('load', () => {
-                                    handleImageLoad(img, imageContainer, placeholder, card);
-                                });
-                                img.addEventListener('error', () => {
-                                    handleImageError(placeholder, imageContainer, card);
-                                });
-                            }
+                            // 设置图片加载处理
+                            setupImageLoading(imageContainer, img, placeholder, card);
                         }
                         
                         // 内容部分
@@ -738,12 +684,13 @@
                             </div>
                         `;
                         
+                        // 详情部分
                         const detailsDiv = document.createElement('div');
                         detailsDiv.className = 'card-details';
                         
                         let detailsHtml = '<div class="card-details-content">';
-                        
                         detailsHtml += '<h4 class="details-title">该作品的作者</h4>';
+                        
                         if (cardData.authorLink) {
                             detailsHtml += `<p class="details-text"><a href="${cardData.authorLink}" class="author-link" target="_blank">${cardData.author}</a></p>`;
                         } else {
@@ -767,7 +714,6 @@
                         }
                         
                         detailsHtml += `<h4 class="details-title">总结</h4><p class="details-text">${cardData.summary}</p>`;
-                        
                         detailsHtml += '</div>';
                         detailsDiv.innerHTML = detailsHtml;
                         
@@ -775,12 +721,14 @@
                         relativeContainer.appendChild(contentDiv);
                         card.appendChild(relativeContainer);
                         
+                        // 添加等级徽章
                         const badge = document.createElement('div');
                         badge.className = 'tier-badge';
                         badge.setAttribute('data-tier', cardData.tier);
                         badge.textContent = cardData.tier;
                         relativeContainer.appendChild(badge);
                         
+                        // 添加设备角标
                         if (cardData.kind && (cardData.kind === 'mobile' || cardData.kind === 'pc')) {
                             const dev = document.createElement('div');
                             dev.className = `device-badge ${cardData.kind}`;
@@ -801,8 +749,7 @@
                     document.getElementById('sortedContent').innerHTML = `
                         <div style="text-align:center; padding:3rem; color:#ef4444;">
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
-                            <p style="margin-top:1rem;">加载卡片数据失败，请确保 cards.json 文件存在且格式正确。</p>
-                            <p style="margin-top:0.5rem; color:#9ca3af; font-size:0.9rem;">${error.message}</p>
+                            <p style="margin-top:1rem;">加载卡片数据失败</p>
                         </div>
                     `;
                 }
@@ -818,29 +765,17 @@
                 }
             }
 
-            // 立即终止所有动画
             function abortCurrentAnimation() {
                 if (animationTimeout) {
                     clearTimeout(animationTimeout);
                     animationTimeout = null;
                 }
-                
-                document.querySelectorAll('.tier-card').forEach(card => {
-                    card.classList.remove('search-exit', 'search-enter', 'search-enter-active');
-                    void card.offsetWidth;
-                });
-                
-                document.querySelectorAll('.tier-group').forEach(g => {
-                    g.style.opacity = '';
-                });
             }
 
-            // 带动画的渲染
             function renderWithAnimation(searchTerm) {
                 abortCurrentAnimation();
                 
                 currentSearchTerm = searchTerm;
-                const container = document.getElementById('sortedContent');
                 const footer = document.getElementById('main-footer');
                 const term = searchTerm.toLowerCase().trim();
                 
@@ -971,7 +906,8 @@
                             if (icon) icon.classList.remove('rotate-180');
                             card.classList.remove('card-expanded');
                         } else {
-                            details.style.maxHeight = details.scrollHeight + 20 + 'px';
+                            const scrollHeight = details.scrollHeight;
+                            details.style.maxHeight = scrollHeight + 20 + 'px';
                             setTimeout(() => details.style.overflowY = 'auto', 400);
                             if (icon) icon.classList.add('rotate-180');
                             card.classList.add('card-expanded');
@@ -987,7 +923,7 @@
                             entry.target.classList.add('animate-visible');
                         }
                     });
-                }, { threshold: 0.1, rootMargin: '0px' });
+                }, { threshold: 0.1 });
                 
                 document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
             }
@@ -1000,14 +936,12 @@
                 const footer = document.getElementById('main-footer');
                 if (footer) {
                     setTimeout(() => {
-                        if (!footer.classList.contains('footer-visible') && 
-                            !footer.classList.contains('footer-enter-active')) {
-                            footer.classList.add('footer-visible');
-                        }
+                        footer.classList.add('footer-visible');
                     }, 1000);
                 }
             }, 500);
 
+            // 搜索功能
             const searchInput = document.getElementById('float-search');
             const clearBtn = document.getElementById('float-clear');
 
@@ -1030,6 +964,7 @@
                 }
             });
 
+            // 跳转
             document.querySelectorAll('.tier-jump').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tier = btn.getAttribute('data-tier');
